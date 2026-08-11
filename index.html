@@ -523,12 +523,14 @@
     /* ─── STATUS KEY ─── */
     .status-key {
       display: flex;
+      justify-content: center;
       gap: 24px;
       flex-wrap: wrap;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
       padding: 16px 20px;
       background: #111;
       border: 2px solid #1e1e1e;
+      list-style: none;
     }
 
     .key-item {
@@ -681,13 +683,68 @@
       text-align: right;
     }
 
-    /* ─── THREE-ROADMAP GRID ─── */
-    .roadmap-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 40px;
-      align-items: start;
+    /* ─── ROADMAP EXPLORER (tabs) ─── */
+    .roadmap-explorer {
+      max-width: 1100px;
+      margin: 0 auto;
     }
+
+    .roadmap-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      max-width: 800px;
+      margin: 0 auto 24px;
+    }
+
+    .roadmap-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 56px;
+      padding: 12px 16px;
+      background: #111;
+      border: 2px solid var(--border);
+      color: var(--gray);
+      font-family: var(--pixel);
+      font-size: 9px;
+      line-height: 1.6;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #0a0a0a;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+
+    .roadmap-tab:hover { border-color: var(--green); color: var(--green); }
+    .roadmap-tab:hover .roadmap-tab-state { color: var(--green); }
+
+    .roadmap-tab[aria-selected='true'] {
+      background: var(--green);
+      border-color: var(--green);
+      color: var(--bg);
+      box-shadow: 0 4px 0 var(--green2);
+    }
+    .roadmap-tab[aria-selected='true'] .roadmap-tab-subtitle,
+    .roadmap-tab[aria-selected='true'] .roadmap-tab-state { color: var(--bg); }
+    .roadmap-tab[aria-selected='true'] .roadmap-tab-state { opacity: .8; }
+
+    .roadmap-tab:focus-visible {
+      outline: 3px solid var(--aqua);
+      outline-offset: 2px;
+    }
+
+    .roadmap-tab-name { font-size: 12px; }
+    .roadmap-tab-subtitle { font-size: 9px; opacity: .8; }
+    .roadmap-tab-state { font-size: 8px; color: var(--green2); }
+
+    .roadmap-stage {
+      padding: 32px;
+      background: var(--bg2);
+    }
+
+    .roadmap-panel[hidden] { display: none; }
 
     .roadmap-repo-label {
       font-family: var(--pixel);
@@ -702,15 +759,56 @@
     }
 
     .tbd-block {
-      background: #111;
-      border: 2px solid #1e1e1e;
-      border-left: 4px solid #2a2a2a;
-      padding: 32px;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 15px, rgba(255,255,255,.015) 15px 16px),
+        repeating-linear-gradient(90deg, transparent 0 15px, rgba(255,255,255,.015) 15px 16px),
+        #111;
+      border: 2px dashed #1e1e1e;
+      padding: 40px 24px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
       text-align: center;
+    }
+
+    .tbd-glyph {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 28px;
       color: var(--dark-gray);
+      border: 3px solid #2a2a2a;
+      background: #0e0e0e;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      image-rendering: pixelated;
+    }
+
+    .tbd-title {
+      font-family: var(--pixel);
+      font-size: 10px;
+      color: var(--gray);
       letter-spacing: 2px;
+      line-height: 1.8;
+    }
+
+    .tbd-copy {
+      font-size: 20px;
+      color: var(--dark-gray);
+      max-width: 420px;
+      line-height: 1.5;
+    }
+
+    .roadmap-source {
+      font-family: var(--pixel);
+      font-size: 7px;
+      color: var(--dark-gray);
+      margin-top: 32px;
+      text-align: right;
     }
 
     /* ─── COLLAPSIBLE PHASE ─── */
@@ -742,10 +840,6 @@
     }
 
     /* ─── RESPONSIVE ─── */
-    @media (max-width: 900px) {
-      .roadmap-grid { grid-template-columns: 1fr; }
-    }
-
     @media (max-width: 750px) {
       .feature-card { flex: 0 1 calc((100% - 20px) / 2); }
     }
@@ -765,6 +859,22 @@
       }
       .team-member .team-avatar { grid-row: 1 / -1; }
       .team-member .team-role { grid-column: 2; text-align: left; font-size: 18px; }
+      #roadmap.section { padding-left: 16px; padding-right: 16px; }
+      .roadmap-tabs { gap: 4px; margin-bottom: 16px; }
+      .roadmap-tab { padding: 10px 4px; font-size: 8px; }
+      .roadmap-tab-name { font-size: 9px; }
+      .roadmap-tab-state { font-size: 8px; }
+      .roadmap-tab-subtitle { display: none; }
+      .roadmap-stage { padding: 14px; }
+      .status-key {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 16px;
+        justify-content: stretch;
+        margin-bottom: 24px;
+      }
+      .tbd-block { min-height: 160px; padding: 28px 16px; }
+      .roadmap-source { text-align: left; }
     }
   </style>
 </head>
@@ -851,29 +961,50 @@
     <p class="section-label">[ Development Progress ]</p>
     <h2 class="section-title">Roadmap</h2>
 
-    <!-- Status key -->
-    <div class="status-key">
-      <div class="key-item"><span class="key-dot done"></span> Completed</div>
-      <div class="key-item"><span class="key-dot wip"></span> In Progress</div>
-      <div class="key-item"><span class="key-dot planned"></span> Planned</div>
-      <div class="key-item"><span class="key-dot future"></span> Future</div>
-    </div>
+    <div class="roadmap-explorer">
+      <div class="roadmap-tabs" role="tablist" aria-label="Roadmap areas" aria-orientation="horizontal">
+        <button type="button" class="roadmap-tab" id="roadmap-tab-backend" role="tab" aria-selected="true" aria-controls="roadmap-panel-backend" data-roadmap-track="backend" tabindex="0">
+          <span class="roadmap-tab-name">Backend</span>
+          <span class="roadmap-tab-subtitle">Core API</span>
+          <span class="roadmap-tab-state">[ ... ]</span>
+        </button>
+        <button type="button" class="roadmap-tab" id="roadmap-tab-frontend" role="tab" aria-selected="false" aria-controls="roadmap-panel-frontend" data-roadmap-track="frontend" tabindex="-1">
+          <span class="roadmap-tab-name">Web</span>
+          <span class="roadmap-tab-subtitle">Dashboard</span>
+          <span class="roadmap-tab-state">[ ... ]</span>
+        </button>
+        <button type="button" class="roadmap-tab" id="roadmap-tab-mobile" role="tab" aria-selected="false" aria-controls="roadmap-panel-mobile" data-roadmap-track="mobile" tabindex="-1">
+          <span class="roadmap-tab-name">Mobile</span>
+          <span class="roadmap-tab-subtitle">App</span>
+          <span class="roadmap-tab-state">[ ... ]</span>
+        </button>
+      </div>
 
-    <div class="roadmap-grid">
-      <div class="roadmap-col">
-        <p class="roadmap-repo-label">[ Backend / Core API ]</p>
-        <div id="timeline-backend" class="timeline"></div>
-      </div>
-      <div class="roadmap-col">
-        <p class="roadmap-repo-label">[ Dashboard / Web ]</p>
-        <div id="timeline-frontend" class="timeline"></div>
-      </div>
-      <div class="roadmap-col">
-        <p class="roadmap-repo-label">[ Mobile App ]</p>
-        <div id="timeline-mobile" class="timeline"></div>
+      <div class="roadmap-stage mc-panel">
+        <!-- Status key -->
+        <ul class="status-key">
+          <li class="key-item"><span class="key-dot done" aria-hidden="true"></span> Completed</li>
+          <li class="key-item"><span class="key-dot wip" aria-hidden="true"></span> In Progress</li>
+          <li class="key-item"><span class="key-dot planned" aria-hidden="true"></span> Planned</li>
+          <li class="key-item"><span class="key-dot future" aria-hidden="true"></span> Future</li>
+        </ul>
+
+        <div class="roadmap-panel" id="roadmap-panel-backend" role="tabpanel" aria-labelledby="roadmap-tab-backend" tabindex="0">
+          <p class="roadmap-repo-label">[ Backend / Core API ]</p>
+          <div id="timeline-backend" class="timeline"></div>
+        </div>
+        <div class="roadmap-panel" id="roadmap-panel-frontend" role="tabpanel" aria-labelledby="roadmap-tab-frontend" tabindex="0" hidden>
+          <p class="roadmap-repo-label">[ Dashboard / Web ]</p>
+          <div id="timeline-frontend" class="timeline"></div>
+        </div>
+        <div class="roadmap-panel" id="roadmap-panel-mobile" role="tabpanel" aria-labelledby="roadmap-tab-mobile" tabindex="0" hidden>
+          <p class="roadmap-repo-label">[ Mobile App ]</p>
+          <div id="timeline-mobile" class="timeline"></div>
+        </div>
+
+        <p class="roadmap-source" id="data-source" aria-live="polite">[ loading roadmap data ]</p>
       </div>
     </div>
-    <p id="data-source" style="font-family:var(--pixel);font-size:7px;color:var(--dark-gray);margin-top:32px;text-align:right;"></p>
   </div>
 
   <div class="grass-strip" style="transform:scaleY(-1);"></div>
@@ -910,11 +1041,32 @@
 
     const BADGE_LABEL = { done: 'Completed', wip: 'In Progress', planned: 'Planned', future: 'Future' };
 
-    function renderTimeline(containerId, data) {
+    const EMPTY_STATE = {
+      backend: {
+        title: '[ ROADMAP DATA UNAVAILABLE ]',
+        copy: 'The Backend / Core API roadmap could not be loaded. Refresh to try again.'
+      },
+      frontend: {
+        title: '[ ROADMAP COMING SOON ]',
+        copy: 'Public Dashboard / Web milestones have not been published yet.'
+      },
+      mobile: {
+        title: '[ ROADMAP COMING SOON ]',
+        copy: 'Public Mobile App milestones have not been published yet.'
+      }
+    };
+
+    function renderTimeline(containerId, data, emptyState) {
       const el = document.getElementById(containerId);
       if (!el) return;
       if (!data || !data.phases || data.phases.length === 0) {
-        el.innerHTML = '<div class="tbd-block">[ TBD - roadmap coming soon ]</div>';
+        const title = emptyState ? emptyState.title : '[ ROADMAP COMING SOON ]';
+        const copy = emptyState ? emptyState.copy : '';
+        el.innerHTML = '<div class="tbd-block" role="note">' +
+          '<span class="tbd-glyph" aria-hidden="true">?</span>' +
+          '<p class="tbd-title">' + title + '</p>' +
+          (copy ? '<p class="tbd-copy">' + copy + '</p>' : '') +
+          '</div>';
         return;
       }
       el.innerHTML = data.phases.map(p => {
@@ -1019,24 +1171,82 @@
       } catch (_) { return null; }
     }
 
+    function initRoadmapTabs(roadmapData) {
+      const tabs = Array.from(document.querySelectorAll('.roadmap-tab'));
+      const panels = tabs.map(tab => document.getElementById(tab.getAttribute('aria-controls')));
+      const sourceEl = document.getElementById('data-source');
+
+      function updateSourceNote(tab) {
+        if (!sourceEl) return;
+        const data = roadmapData[tab.getAttribute('data-roadmap-track')];
+        if (!data || !data.phases || data.phases.length === 0) {
+          sourceEl.textContent = tab.getAttribute('data-roadmap-track') === 'backend'
+            ? '[ roadmap data unavailable ]'
+            : '[ public roadmap not published ]';
+          return;
+        }
+        sourceEl.textContent = data.updatedAt
+          ? '[ live data - last updated: ' + data.updatedAt + ' ]'
+          : '[ live roadmap data ]';
+      }
+
+      function selectTab(tab) {
+        tabs.forEach((t, i) => {
+          const active = t === tab;
+          t.setAttribute('aria-selected', String(active));
+          t.tabIndex = active ? 0 : -1;
+          panels[i].hidden = !active;
+        });
+        updateSourceNote(tab);
+      }
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => selectTab(tab));
+        tab.addEventListener('keydown', (e) => {
+          let next = null;
+          if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+          else if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+          else if (e.key === 'Home') next = tabs[0];
+          else if (e.key === 'End') next = tabs[tabs.length - 1];
+          if (next) {
+            e.preventDefault();
+            selectTab(next);
+            next.focus();
+          }
+        });
+      });
+
+      tabs.forEach(tab => {
+        const stateEl = tab.querySelector('.roadmap-tab-state');
+        const data = roadmapData[tab.getAttribute('data-roadmap-track')];
+        if (data && Array.isArray(data.phases) && data.phases.length > 0) {
+          const n = data.phases.length;
+          stateEl.textContent = '[ ' + n + (n === 1 ? ' PHASE ]' : ' PHASES ]');
+        } else {
+          stateEl.textContent = '[ TBD ]';
+        }
+      });
+
+      selectTab(tabs[0]);
+    }
+
     async function init() {
       const [backend, frontend, mobile] = await Promise.all([
         safeFetch(URLS.backend),
         safeFetch(URLS.frontend),
         safeFetch(URLS.mobile)
       ]);
+      const roadmapData = { backend, frontend, mobile };
 
       renderMeta(backend);
       renderFeatures(backend);
       renderStack(backend);
       renderTeam(backend);
-      renderTimeline('timeline-backend', backend);
-      renderTimeline('timeline-frontend', frontend);
-      renderTimeline('timeline-mobile', mobile);
+      renderTimeline('timeline-backend', backend, EMPTY_STATE.backend);
+      renderTimeline('timeline-frontend', frontend, EMPTY_STATE.frontend);
+      renderTimeline('timeline-mobile', mobile, EMPTY_STATE.mobile);
 
-      const sourceEl = document.getElementById('data-source');
-      const updated = backend && backend.updatedAt;
-      if (updated) sourceEl.textContent = '[ live data - last updated: ' + updated + ' ]';
+      initRoadmapTabs(roadmapData);
     }
 
     document.addEventListener('DOMContentLoaded', init);
