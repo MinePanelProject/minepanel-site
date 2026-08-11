@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MinePanel - Self-Hosted Minecraft Server Manager</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description" content="Self-hosted Minecraft server management panel. One docker compose up brings up the entire stack on your own machine. No cloud lock-in. Full control." />
+
+  <!-- OpenGraph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://minepanel.xyz" />
+  <meta property="og:title"       content="MinePanel - Self-Hosted Minecraft Server Manager" />
+  <meta property="og:description" content="Self-hosted Minecraft server management panel. One docker compose up brings up the entire stack on your own machine. No cloud lock-in. Full control." />
+  <meta property="og:image"       content="https://minepanel.xyz/og.png" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="MinePanel - Self-Hosted Minecraft Server Manager" />
+  <meta name="twitter:description" content="Self-hosted Minecraft server management panel. One docker compose up brings up the entire stack on your own machine. No cloud lock-in. Full control." />
+  <meta name="twitter:image"       content="https://minepanel.xyz/og.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0d0d0d;
+      --bg2:       #141414;
+      --panel:     #1a1a2e;
+      --border:    #2d5a27;
+      --border2:   #3d7a37;
+      --green:     #55ff55;
+      --green2:    #33cc33;
+      --yellow:    #ffff55;
+      --white:     #ffffff;
+      --gray:      #aaaaaa;
+      --dark-gray: #555555;
+      --red:       #ff5555;
+      --aqua:      #55ffff;
+      --gold:      #ffaa00;
+      --purple:    #aa00ff;
+      --pixel:     'Press Start 2P', monospace;
+      --vt:        'VT323', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--vt);
+      font-size: 21px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Scanlines overlay ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.08) 2px,
+        rgba(0,0,0,.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── Dirt border strip ─── */
+    .dirt-strip {
+      width: 100%;
+      height: 32px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #5c4033 0px, #5c4033 16px,
+          #4a3228 16px, #4a3228 32px
+        );
+      border-top: 4px solid #3a2520;
+      border-bottom: 4px solid #3a2520;
+      image-rendering: pixelated;
+    }
+
+    /* ─── Grass-top strip ─── */
+    .grass-strip {
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(180deg, #5d9e3e 0%, #4a8030 100%);
+      border-bottom: 4px solid #3a6020;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(4px);
+      border-bottom: 3px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    nav .logo {
+      font-family: var(--pixel);
+      font-size: 14px;
+      color: var(--green);
+      text-shadow: 0 3px 0 var(--green2);
+      white-space: nowrap;
+    }
+
+    nav .logo span {
+      color: var(--yellow);
+      text-shadow: 0 3px 0 #aa8800;
+    }
+
+    nav a {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--gray);
+      text-decoration: none;
+      transition: color .15s;
+    }
+
+    nav a:not(.github-btn):hover { color: var(--green); }
+
+    nav .spacer { flex: 1; }
+
+    nav .github-btn {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--bg);
+      background: var(--green);
+      border: none;
+      padding: 10px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 0 var(--green2), inset 0 1px 0 rgba(255,255,255,.2);
+      transition: transform .1s, box-shadow .1s;
+      image-rendering: pixelated;
+    }
+
+    nav .github-btn:hover {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 var(--green2);
+    }
+
+    nav .github-btn:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 80px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(85,255,85,.07) 0%, transparent 70%);
+      position: relative;
+    }
+
+    .hero h1 {
+      font-family: var(--pixel);
+      font-size: clamp(28px, 5.5vw, 58px);
+      color: var(--green);
+      text-shadow:
+        0 5px 0 var(--green2),
+        0 0 60px rgba(85,255,85,.4);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span { color: var(--yellow); text-shadow: 0 5px 0 #aa8800; }
+
+    .hero .subtitle {
+      font-family: var(--pixel);
+      font-size: clamp(9px, 1.8vw, 13px);
+      color: var(--gray);
+      margin: 28px auto 48px;
+      max-width: 680px;
+      line-height: 2.4;
+    }
+
+    .hero .tagline {
+      font-size: 28px;
+      color: var(--aqua);
+      margin-bottom: 48px;
+      letter-spacing: 1px;
+    }
+
+    .hero .cta-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--pixel);
+      font-size: 10px;
+      padding: 16px 26px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      image-rendering: pixelated;
+      transition: transform .1s, box-shadow .1s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #000;
+      box-shadow: 0 5px 0 var(--green2), inset 0 1px 0 rgba(255,255,255,.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--gray);
+      border: 2px solid var(--dark-gray);
+      box-shadow: 0 4px 0 #333;
+    }
+
+    .btn:hover { transform: translateY(2px); }
+    .btn-primary:hover { box-shadow: 0 3px 0 var(--green2); }
+    .btn-secondary:hover { border-color: var(--gray); color: var(--white); box-shadow: 0 2px 0 #333; }
+    .btn:active { transform: translateY(5px); box-shadow: none !important; }
+
+    /* ─── MC WINDOW PANEL ─── */
+    .mc-panel {
+      background: var(--panel);
+      border: 3px solid var(--border);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), 4px 4px 0 #0a0a0a;
+      position: relative;
+    }
+
+    .mc-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(85,255,85,.08);
+      pointer-events: none;
+    }
+
+    /* ─── SECTION WRAPPER ─── */
+    .section {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 72px 32px;
+    }
+
+    #roadmap.section { max-width: 1280px; }
+
+    .section-label {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--green2);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--pixel);
+      font-size: clamp(16px, 3vw, 26px);
+      color: var(--white);
+      margin-bottom: 40px;
+      text-shadow: 0 3px 0 #222;
+    }
+
+    /* ─── FEATURE GRID ─── */
+    .features-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .features-coming-label {
+      flex-basis: 100%;
+      width: 100%;
+      font-family: var(--pixel);
+      font-size: 8px;
+      color: var(--dark-gray);
+      letter-spacing: 3px;
+      padding: 12px 0 4px;
+      border-top: 2px solid #1e1e1e;
+      margin-top: 8px;
+    }
+
+    .feature-card {
+      flex: 0 1 calc((100% - 40px) / 3);
+      min-width: 260px;
+      padding: 24px;
+      background: #111;
+      border-left: 4px solid var(--border);
+    }
+
+    .feature-card.coming {
+      opacity: 0.65;
+      border-left: 4px dashed;
+    }
+
+    .feature-card .icon {
+      font-size: 42px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-family: var(--pixel);
+      font-size: 11px;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      font-size: 20px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    /* ─── TECH STACK ─── */
+    .stack-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .stack-pill {
+      font-family: var(--pixel);
+      font-size: 9px;
+      padding: 10px 16px;
+      background: #111;
+      border: 2px solid var(--border);
+      color: var(--green);
+    }
+
+    .stack-pill.lang  { border-color: #3355aa; color: var(--aqua); }
+    .stack-pill.db    { border-color: #5533aa; color: #cc88ff; }
+    .stack-pill.infra { border-color: #aa5500; color: var(--gold); }
+    .stack-pill.auth  { border-color: #aa3355; color: #ff8888; }
+
+    /* ─── TIMELINE ─── */
+    .timeline {
+      position: relative;
+      padding-left: 0;
+    }
+
+    /* vertical line */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: repeating-linear-gradient(
+        180deg,
+        var(--border) 0px, var(--border) 8px,
+        transparent 8px, transparent 16px
+      );
+    }
+
+    .tl-item {
+      position: relative;
+      padding-left: 64px;
+      margin-bottom: 48px;
+    }
+
+    .tl-item:last-child { margin-bottom: 0; }
+
+    /* phase circle/diamond */
+    .tl-dot {
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--pixel);
+      font-size: 7px;
+      border: 3px solid;
+      background: var(--bg);
+      z-index: 1;
+      image-rendering: pixelated;
+    }
+
+    .tl-dot.done       { border-color: var(--green);  color: var(--green);  background: rgba(85,255,85,.1); }
+    .tl-dot.wip        { border-color: var(--yellow); color: var(--yellow); background: rgba(255,255,85,.08);
+                         animation: glow-y 2s ease-in-out infinite; }
+    .tl-dot.planned    { border-color: var(--dark-gray); color: var(--dark-gray); }
+    .tl-dot.future     { border-color: #333; color: #333; }
+
+    @keyframes glow-y {
+      0%,100% { box-shadow: 0 0 4px rgba(255,255,85,.3); }
+      50%      { box-shadow: 0 0 16px rgba(255,255,85,.7); }
+    }
+
+    .tl-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .tl-phase {
+      font-family: var(--pixel);
+      font-size: 12px;
+      color: var(--white);
+    }
+
+    .tl-phase-name {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--gray);
+    }
+
+    .tl-badge {
+      font-family: var(--pixel);
+      font-size: 8px;
+      padding: 5px 10px;
+      border: 2px solid;
+      text-transform: uppercase;
+    }
+
+    .tl-badge.done    { border-color: var(--green);  color: var(--green); }
+    .tl-badge.wip     { border-color: var(--yellow); color: var(--yellow); }
+    .tl-badge.planned { border-color: var(--dark-gray); color: var(--dark-gray); }
+    .tl-badge.future  { border-color: #333; color: #333; }
+
+    .tl-body {
+      background: #111;
+      border: 2px solid #1e1e1e;
+      border-left: 4px solid;
+      padding: 20px 24px;
+    }
+
+    .tl-item.done    .tl-body { border-left-color: var(--green); }
+    .tl-item.wip     .tl-body { border-left-color: var(--yellow); }
+    .tl-item.planned .tl-body { border-left-color: var(--dark-gray); }
+    .tl-item.future  .tl-body { border-left-color: #2a2a2a; }
+
+    .tl-desc {
+      font-size: 22px;
+      color: var(--gray);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .tl-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 8px 20px;
+    }
+
+    .tl-list li {
+      font-family: var(--pixel);
+      font-size: 11px;
+      color: var(--gray);
+      padding-left: 20px;
+      position: relative;
+      line-height: 2.4;
+    }
+
+    .tl-list li::before {
+      content: '▶';
+      position: absolute;
+      left: 0;
+      font-size: 8px;
+      top: 2px;
+    }
+
+    .tl-item.done    .tl-list li::before { color: var(--green); }
+    .tl-item.wip     .tl-list li::before { color: var(--yellow); }
+    .tl-item.planned .tl-list li::before { color: var(--dark-gray); }
+    .tl-item.future  .tl-list li::before { color: #333; }
+
+    /* partial done items - needs higher specificity than .tl-item.wip .tl-list li::before */
+    .tl-list li.done {
+      color: var(--green2);
+    }
+    .tl-item .tl-list li.done::before { color: var(--green); content: '✔'; }
+
+    /* ─── PROGRESS BAR ─── */
+    .progress-bar-wrap {
+      margin-top: 16px;
+      background: #0a0a0a;
+      border: 2px solid #1e1e1e;
+      height: 16px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--green2) 0px, var(--green2) 12px,
+        var(--green)  12px, var(--green)  16px
+      );
+      image-rendering: pixelated;
+      transition: width .5s;
+    }
+
+    .progress-label {
+      font-family: var(--pixel);
+      font-size: 8px;
+      color: var(--gray);
+      margin-top: 8px;
+    }
+
+    /* ─── STATUS KEY ─── */
+    .status-key {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding: 16px 20px;
+      background: #111;
+      border: 2px solid #1e1e1e;
+    }
+
+    .key-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--gray);
+    }
+
+    .key-dot {
+      width: 12px;
+      height: 12px;
+      border: 2px solid;
+    }
+
+    .key-dot.done    { border-color: var(--green);      background: rgba(85,255,85,.2); }
+    .key-dot.wip     { border-color: var(--yellow);     background: rgba(255,255,85,.1); }
+    .key-dot.planned { border-color: var(--dark-gray);  background: transparent; }
+    .key-dot.future  { border-color: #333;              background: transparent; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 3px solid var(--border);
+      text-align: center;
+      padding: 40px 24px;
+      background: #0a0a0a;
+    }
+
+    footer .footer-logo {
+      font-family: var(--pixel);
+      font-size: 14px;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    footer p {
+      font-size: 20px;
+      color: var(--dark-gray);
+    }
+
+    footer a {
+      color: var(--green2);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ─── DIVIDER ─── */
+    .pixel-divider {
+      border: none;
+      height: 4px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--border) 0px, var(--border) 8px,
+        transparent 8px, transparent 16px
+      );
+      margin: 0;
+    }
+
+    /* ─── DEPLOY SECTION ─── */
+    .deploy-box {
+      background: #0e0e0e;
+      border: 2px solid var(--border);
+      padding: 24px;
+      margin-top: 24px;
+    }
+
+    .deploy-box pre {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--green);
+      line-height: 2.4;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .deploy-box pre .comment { color: var(--dark-gray); }
+    .deploy-box pre .cmd { color: var(--aqua); }
+    .deploy-box pre .arg { color: var(--yellow); }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+    /* ─── TEAM ─── */
+    .team-roster {
+      background: #111;
+      overflow: hidden;
+    }
+
+    .team-member {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 20px;
+      padding: 16px 24px;
+      border-bottom: 2px solid #1e1e1e;
+      text-decoration: none;
+      color: inherit;
+      transition: background .15s;
+    }
+
+    .team-member:last-child { border-bottom: none; }
+    .team-member:hover { background: rgba(85,255,85,.06); }
+
+    .team-avatar {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--border2);
+      image-rendering: pixelated;
+      flex-shrink: 0;
+    }
+
+    .team-avatar--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1e1e1e;
+      color: var(--dark-gray);
+      font-family: var(--pixel);
+      font-size: 20px;
+    }
+
+    .team-member--dummy {
+      cursor: default;
+    }
+    .team-member--dummy:hover { background: transparent; }
+
+    .team-link-label {
+      font-family: var(--pixel);
+      font-size: 11px;
+      color: var(--green);
+    }
+    .team-member:hover .team-link-label { color: var(--green2); }
+
+    .team-link-label .team-username {
+      color: var(--gray);
+      font-size: 10px;
+    }
+    .team-member:hover .team-link-label .team-username { color: var(--aqua); }
+
+    .team-role {
+      font-size: 20px;
+      color: var(--gray);
+      text-align: right;
+    }
+
+    /* ─── THREE-ROADMAP GRID ─── */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .roadmap-repo-label {
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--green2);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      padding: 8px 14px;
+      background: #111;
+      border: 2px solid var(--border);
+      display: inline-block;
+    }
+
+    .tbd-block {
+      background: #111;
+      border: 2px solid #1e1e1e;
+      border-left: 4px solid #2a2a2a;
+      padding: 32px;
+      text-align: center;
+      font-family: var(--pixel);
+      font-size: 9px;
+      color: var(--dark-gray);
+      letter-spacing: 2px;
+    }
+
+    /* ─── COLLAPSIBLE PHASE ─── */
+    .tl-phase-block { margin-bottom: 48px; }
+    .tl-phase-block:last-child { margin-bottom: 0; }
+    .tl-phase-toggle {
+      cursor: pointer;
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+      user-select: none;
+    }
+    .tl-phase-toggle::after {
+      content: '▼';
+      font-family: var(--pixel);
+      font-size: 8px;
+      color: var(--gray);
+      margin-left: auto;
+      transition: transform .2s;
+    }
+    .tl-phase-block.phase-collapsed .tl-phase-toggle::after { transform: rotate(-90deg); }
+    .tl-phase-block .tl-body {
+      transition: opacity .2s;
+    }
+    .tl-phase-block.phase-collapsed .tl-body {
+      display: none;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .roadmap-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 750px) {
+      .feature-card { flex: 0 1 calc((100% - 20px) / 2); }
+    }
+
+    @media (max-width: 600px) {
+      nav { gap: 16px; flex-wrap: wrap; }
+      nav a { display: none; }
+      .feature-card { flex: 0 1 100%; min-width: 0; }
+      .stack-grid { justify-content: center; }
+      .timeline::before { left: 14px; }
+      .tl-item { padding-left: 48px; }
+      .tl-dot { left: 2px; }
+      .tl-list { grid-template-columns: 1fr; }
+      .team-member {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+      }
+      .team-member .team-avatar { grid-row: 1 / -1; }
+      .team-member .team-role { grid-column: 2; text-align: left; font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Mine<span>Panel</span></div>
+    <a href="#about">About</a>
+    <a href="#features">Features</a>
+    <a href="#stack">Stack</a>
+    <a href="#team">Team</a>
+    <a href="#roadmap">Roadmap</a>
+    <div class="spacer"></div>
+    <a class="github-btn" href="https://github.com/MinePanelProject" target="_blank" rel="noopener">[ GitHub ]</a>
+  </nav>
+
+  <!-- GRASS TOP -->
+  <div class="grass-strip"></div>
+  <div class="dirt-strip"></div>
+
+  <!-- HERO -->
+  <section class="hero" id="about">
+    <p class="section-label">[ Open Source Project ]</p>
+    <h1>Mine<span>Panel</span></h1>
+    <p class="tagline">Self-hosted Minecraft server management, the right way.</p>
+    <p class="subtitle">
+      A single <code style="color:var(--green);background:#0d1f0d;padding:2px 6px;">docker-compose up</code>
+      brings up the entire stack on your own machine.
+      No external services. No cloud lock-in. Full control.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#roadmap">View Roadmap</a>
+      <a class="btn btn-secondary" href="https://github.com/MinePanelProject" target="_blank" rel="noopener">Source Code</a>
+    </div>
+  </section>
+
+  <hr class="pixel-divider" />
+
+  <!-- FEATURES -->
+  <div class="section" id="features">
+    <p class="section-label">[ What it does ]</p>
+    <h2 class="section-title">Core Features</h2>
+    <div id="features-grid" class="features-grid"></div>
+  </div>
+
+  <hr class="pixel-divider" />
+
+  <!-- TECH STACK -->
+  <div class="section" id="stack">
+    <p class="section-label">[ Built with ]</p>
+    <h2 class="section-title">Tech Stack</h2>
+    <div id="stack-grid" class="stack-grid"></div>
+
+    <div class="deploy-box" style="margin-top: 32px;">
+      <p style="font-family:var(--pixel);font-size:9px;color:var(--gray);margin-bottom:16px;">[ Quick Deploy ]</p>
+      <pre><span class="comment"># Clone the repo (public release coming soon)</span>
+<span class="cmd">git clone</span> <span class="arg">https://github.com/MinePanelProject/minepanel-backend</span>
+<span class="cmd">cd</span> <span class="arg">minepanel-backend</span>
+
+<span class="comment"># Configure environment</span>
+<span class="cmd">cp</span> <span class="arg">.env.example .env</span>
+
+<span class="comment"># Launch the full stack</span>
+<span class="cmd">docker compose up</span> <span class="arg">-d</span></pre>
+    </div>
+  </div>
+
+  <hr class="pixel-divider" />
+
+  <!-- TEAM -->
+  <div class="section" id="team">
+    <p class="section-label">[ Who we are ]</p>
+    <h2 class="section-title">Team</h2>
+    <div id="team-roster" class="team-roster mc-panel"></div>
+  </div>
+
+  <hr class="pixel-divider" />
+  <div class="dirt-strip" style="height:20px;"></div>
+  <div class="grass-strip" style="transform:scaleY(-1);"></div>
+
+  <!-- ROADMAP -->
+  <div class="section" id="roadmap">
+    <p class="section-label">[ Development Progress ]</p>
+    <h2 class="section-title">Roadmap</h2>
+
+    <!-- Status key -->
+    <div class="status-key">
+      <div class="key-item"><span class="key-dot done"></span> Completed</div>
+      <div class="key-item"><span class="key-dot wip"></span> In Progress</div>
+      <div class="key-item"><span class="key-dot planned"></span> Planned</div>
+      <div class="key-item"><span class="key-dot future"></span> Future</div>
+    </div>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-col">
+        <p class="roadmap-repo-label">[ Backend / Core API ]</p>
+        <div id="timeline-backend" class="timeline"></div>
+      </div>
+      <div class="roadmap-col">
+        <p class="roadmap-repo-label">[ Dashboard / Web ]</p>
+        <div id="timeline-frontend" class="timeline"></div>
+      </div>
+      <div class="roadmap-col">
+        <p class="roadmap-repo-label">[ Mobile App ]</p>
+        <div id="timeline-mobile" class="timeline"></div>
+      </div>
+    </div>
+    <p id="data-source" style="font-family:var(--pixel);font-size:7px;color:var(--dark-gray);margin-top:32px;text-align:right;"></p>
+  </div>
+
+  <div class="grass-strip" style="transform:scaleY(-1);"></div>
+  <div class="dirt-strip"></div>
+  <div class="grass-strip"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-logo">Mine<span style="color:var(--yellow)">Panel</span></p>
+    <p>Open source. Self-hosted. No cloud required.</p>
+    <p style="margin-top:8px;">
+      <a href="https://github.com/MinePanelProject" target="_blank" rel="noopener">github.com/MinePanelProject</a>
+    </p>
+    <p style="margin-top:20px;font-size:15px;">
+      Not affiliated with Mojang Studios or Microsoft.
+      Minecraft is a trademark of Mojang Synergies AB.
+    </p>
+  </footer>
+
+  <script>
+    const URLS = {
+      backend:  'https://raw.githubusercontent.com/MinePanelProject/minepanel-backend/refs/heads/master/minepanel-site.json',
+      frontend: 'https://raw.githubusercontent.com/MinePanelProject/minepanel-frontend/refs/heads/master/roadmap.json',
+      mobile:   'https://raw.githubusercontent.com/MinePanelProject/minepanel-mobile/refs/heads/master/roadmap.json'
+    };
+
+    function esc(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    const BADGE_LABEL = { done: 'Completed', wip: 'In Progress', planned: 'Planned', future: 'Future' };
+
+    function renderTimeline(containerId, data) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (!data || !data.phases || data.phases.length === 0) {
+        el.innerHTML = '<div class="tbd-block">[ TBD - roadmap coming soon ]</div>';
+        return;
+      }
+      el.innerHTML = data.phases.map(p => {
+        const hasProgress = p.progress != null;
+        const progressHTML = hasProgress ? `
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" style="width:${p.progress}%;"></div>
+          </div>
+          <p class="progress-label">${esc(p.progressLabel || p.progress + '% complete')}</p>` : '';
+        const itemsHTML = (p.items || []).map(item =>
+          `<li class="${item.done ? 'done' : ''}">${esc(item.text)}</li>`
+        ).join('');
+        const collapsed = p.status !== 'wip' ? ' phase-collapsed' : '';
+        return `
+          <div class="tl-phase-block tl-item ${esc(p.status)}${collapsed}">
+            <div class="tl-dot ${esc(p.status)}">${esc(p.id)}</div>
+            <div class="tl-phase-toggle tl-header">
+              <span class="tl-phase">${esc(p.label)}</span>
+              <span class="tl-phase-name">${esc(p.name)}</span>
+              <span class="tl-badge ${esc(p.status)}">${BADGE_LABEL[p.status] || esc(p.status)}</span>
+            </div>
+            <div class="tl-body">
+              <p class="tl-desc">${esc(p.description)}</p>
+              <ul class="tl-list">${itemsHTML}</ul>
+              ${progressHTML}
+            </div>
+          </div>`;
+      }).join('');
+      el.querySelectorAll('.tl-phase-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          toggle.closest('.tl-phase-block').classList.toggle('phase-collapsed');
+        });
+      });
+    }
+
+    function renderFeatures(data) {
+      const grid = document.getElementById('features-grid');
+      if (!grid || !data || !data.features) return;
+      const current = data.features.filter(f => !f.coming);
+      const coming  = data.features.filter(f => f.coming);
+
+      const renderCard = f => {
+        const accentColor = f.color ? `var(--${esc(f.color)})` : 'var(--border)';
+        const titleColor  = f.color ? `var(--${esc(f.color)})` : 'var(--green)';
+        const borderStyle = `style="border-left-color:${accentColor}${f.coming ? ';border-left-style:dashed' : ''};"`;
+        return `<div class="feature-card mc-panel${f.coming ? ' coming' : ''}" ${borderStyle}>
+          <span class="icon">${esc(f.icon)}</span>
+          <h3 style="color:${titleColor}">${esc(f.title)}</h3>
+          <p>${esc(f.description)}</p>
+        </div>`;
+      };
+
+      const comingSection = coming.length ? `
+        <div class="features-coming-label">[ Future phases ]</div>
+        ${coming.map(renderCard).join('')}
+      ` : '';
+
+      grid.innerHTML = current.map(renderCard).join('') + comingSection;
+    }
+
+    function renderTeam(data) {
+      const roster = document.getElementById('team-roster');
+      if (!roster || !data || !data.team) return;
+      roster.innerHTML = data.team.map(m => {
+        const hasGitHub = m.github && m.username;
+        const avatarHTML = hasGitHub
+          ? `<img class="team-avatar" src="https://github.com/${esc(m.username)}.png?size=96" alt="" />`
+          : `<div class="team-avatar team-avatar--placeholder">?</div>`;
+        const namePart = m.username
+          ? `${esc(m.name)} <span class="team-username">(@${esc(m.username)})</span>`
+          : esc(m.name);
+        const inner = `${avatarHTML}
+          <span class="team-link-label">${namePart}</span>
+          <span class="team-role">${esc(m.role || '')}</span>`;
+        return hasGitHub
+          ? `<a class="team-member" href="${esc(m.github)}" target="_blank" rel="noopener">${inner}</a>`
+          : `<div class="team-member team-member--dummy">${inner}</div>`;
+      }).join('');
+    }
+
+    function renderStack(data) {
+      const grid = document.getElementById('stack-grid');
+      if (!grid || !data || !data.techStack) return;
+      grid.innerHTML = data.techStack.map(t =>
+        `<span class="stack-pill ${esc(t.type)}">${esc(t.label)}</span>`
+      ).join('');
+    }
+
+    function renderMeta(data) {
+      if (!data || !data.meta) return;
+      if (data.meta.github) {
+        document.querySelectorAll('a[href="https://github.com/MinePanelProject"]')
+          .forEach(el => el.href = data.meta.github);
+      }
+    }
+
+    async function safeFetch(url) {
+      try {
+        const res = await fetch(url, { cache: 'no-cache' });
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (_) { return null; }
+    }
+
+    async function init() {
+      const [backend, frontend, mobile] = await Promise.all([
+        safeFetch(URLS.backend),
+        safeFetch(URLS.frontend),
+        safeFetch(URLS.mobile)
+      ]);
+
+      renderMeta(backend);
+      renderFeatures(backend);
+      renderStack(backend);
+      renderTeam(backend);
+      renderTimeline('timeline-backend', backend);
+      renderTimeline('timeline-frontend', frontend);
+      renderTimeline('timeline-mobile', mobile);
+
+      const sourceEl = document.getElementById('data-source');
+      const updated = backend && backend.updatedAt;
+      if (updated) sourceEl.textContent = '[ live data - last updated: ' + updated + ' ]';
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
