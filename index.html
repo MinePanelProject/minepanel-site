@@ -381,7 +381,7 @@
     .tl-dot {
       position: absolute;
       left: 8px;
-      top: 4px;
+      top: 0;
       width: 28px;
       height: 28px;
       display: flex;
@@ -395,6 +395,7 @@
       image-rendering: pixelated;
     }
 
+    .tl-dot.completed { border-color: var(--green); color: var(--green); background: rgba(85,255,85,.1); }
     .tl-dot.done       { border-color: var(--green);  color: var(--green);  background: rgba(85,255,85,.1); }
     .tl-dot.wip        { border-color: var(--yellow); color: var(--yellow); background: rgba(255,255,85,.08);
                          animation: glow-y 2s ease-in-out infinite; }
@@ -408,9 +409,10 @@
 
     .tl-header {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 16px;
       flex-wrap: wrap;
+      min-height: 28px;
       margin-bottom: 16px;
     }
 
@@ -434,7 +436,8 @@
       text-transform: uppercase;
     }
 
-    .tl-badge.done    { border-color: var(--green);  color: var(--green); }
+    .tl-badge.completed { border-color: var(--green); color: var(--green); }
+    .tl-badge.done      { border-color: var(--green);  color: var(--green); }
     .tl-badge.wip     { border-color: var(--yellow); color: var(--yellow); }
     .tl-badge.planned { border-color: var(--dark-gray); color: var(--dark-gray); }
     .tl-badge.future  { border-color: #333; color: #333; }
@@ -817,9 +820,10 @@
     .tl-phase-toggle {
       cursor: pointer;
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 16px;
       flex-wrap: wrap;
+      min-height: 28px;
       margin-bottom: 0;
       user-select: none;
     }
