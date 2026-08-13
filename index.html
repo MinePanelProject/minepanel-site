@@ -395,9 +395,12 @@
       image-rendering: pixelated;
     }
 
-    .tl-dot.completed { border-color: var(--green); color: var(--green); background: rgba(85,255,85,.1); }
-    .tl-dot.done       { border-color: var(--green);  color: var(--green);  background: rgba(85,255,85,.1); }
-    .tl-dot.wip        { border-color: var(--yellow); color: var(--yellow); background: rgba(255,255,85,.08);
+    .tl-dot.completed { border-color: var(--green); color: var(--green);
+                        background: linear-gradient(rgba(85,255,85,.2), rgba(85,255,85,.2)), var(--bg); }
+    .tl-dot.done       { border-color: var(--green);  color: var(--green);
+                         background: linear-gradient(rgba(85,255,85,.2), rgba(85,255,85,.2)), var(--bg); }
+    .tl-dot.wip        { border-color: var(--yellow); color: var(--yellow);
+                         background: linear-gradient(rgba(255,255,85,.1), rgba(255,255,85,.1)), var(--bg);
                          animation: glow-y 2s ease-in-out infinite; }
     .tl-dot.planned    { border-color: var(--dark-gray); color: var(--dark-gray); }
     .tl-dot.future     { border-color: #333; color: #333; }
@@ -1073,7 +1076,10 @@
           '</div>';
         return;
       }
-      el.innerHTML = data.phases.map(p => {
+      const isCompleted = p => p.status === 'completed' || p.status === 'done';
+      // first phase immediately following a completed phase stays open by default
+      const firstAfterCompleted = data.phases.findIndex((p, i) => !isCompleted(p) && isCompleted(data.phases[i - 1]));
+      el.innerHTML = data.phases.map((p, i) => {
         const hasProgress = p.progress != null;
         const progressHTML = hasProgress ? `
           <div class="progress-bar-wrap">
@@ -1083,7 +1089,7 @@
         const itemsHTML = (p.items || []).map(item =>
           `<li class="${item.done ? 'done' : ''}">${esc(item.text)}</li>`
         ).join('');
-        const collapsed = p.status !== 'wip' ? ' phase-collapsed' : '';
+        const collapsed = p.status !== 'wip' && i !== firstAfterCompleted ? ' phase-collapsed' : '';
         return `
           <div class="tl-phase-block tl-item ${esc(p.status)}${collapsed}">
             <div class="tl-dot ${esc(p.status)}">${esc(p.id)}</div>
