@@ -46,31 +46,59 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+    }
+
+    .hero-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .hero .hero-title h1 {
+      margin-bottom: 0;
+      font-size: clamp(26px, 6vw, 58px);
+    }
+
+    .hero-mark {
+      width: 120px;
+      height: 120px;
+      display: block;
+      flex: none;
+    }
+
+    .feature-card.accent-info { border-left-color: var(--aqua); }
+    .feature-card.accent-info h3 { color: var(--aqua); }
+    .feature-card.accent-gold { border-left-color: var(--gold); }
+    .feature-card.accent-gold h3 { color: var(--gold); }
+
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--bg);
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0,0,0,.08) 2px,
+          rgba(0,0,0,.08) 4px
+        ),
+        var(--bg);
       color: var(--white);
       font-family: var(--vt);
       font-size: 21px;
       line-height: 1.6;
       overflow-x: hidden;
-    }
-
-    /* ─── Scanlines overlay ─── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,.08) 2px,
-        rgba(0,0,0,.08) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
     }
 
     /* ─── Dirt border strip ─── */
@@ -111,53 +139,68 @@
     }
 
     nav .logo {
-      font-family: var(--pixel);
-      font-size: 14px;
-      color: var(--green);
-      text-shadow: 0 3px 0 var(--green2);
-      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      padding: 0;
+      text-decoration: none;
+      transition: filter .15s;
     }
 
-    nav .logo span {
-      color: var(--yellow);
-      text-shadow: 0 3px 0 #aa8800;
+    nav .logo:hover { filter: brightness(1.15); }
+
+    nav .logo-img {
+      width: 50px;
+      height: 50px;
+      display: block;
     }
 
     nav a {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 11px;
       color: var(--gray);
       text-decoration: none;
       transition: color .15s;
+      padding: 8px 6px;
     }
 
-    nav a:not(.github-btn):hover { color: var(--green); }
+    nav a:hover { color: var(--green); }
 
     nav .spacer { flex: 1; }
 
-    nav .github-btn {
-      font-family: var(--pixel);
-      font-size: 9px;
-      color: var(--bg);
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .nav-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      flex: none;
+      transition: border-color .15s;
+    }
+
+    .nav-toggle:hover { border-color: var(--green); }
+
+    .nav-toggle-bar {
+      width: 20px;
+      height: 3px;
       background: var(--green);
-      border: none;
-      padding: 10px 16px;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 0 4px 0 var(--green2), inset 0 1px 0 rgba(255,255,255,.2);
-      transition: transform .1s, box-shadow .1s;
-      image-rendering: pixelated;
-    }
-
-    nav .github-btn:hover {
-      transform: translateY(2px);
       box-shadow: 0 2px 0 var(--green2);
+      transition: transform .15s, opacity .15s;
     }
 
-    nav .github-btn:active {
-      transform: translateY(4px);
-      box-shadow: none;
-    }
+    .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(2) { opacity: 0; }
+    .nav-toggle[aria-expanded='true'] .nav-toggle-bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
     /* ─── HERO ─── */
     .hero {
@@ -172,13 +215,13 @@
       font-size: clamp(28px, 5.5vw, 58px);
       color: var(--green);
       text-shadow:
-        0 5px 0 var(--green2),
-        0 0 60px rgba(85,255,85,.4);
+        0 3px 0 var(--green2),
+        0 0 40px rgba(85,255,85,.35);
       letter-spacing: 4px;
       margin-bottom: 12px;
     }
 
-    .hero h1 span { color: var(--yellow); text-shadow: 0 5px 0 #aa8800; }
+    .hero h1 span { color: var(--yellow); text-shadow: 0 3px 0 #aa8800; }
 
     .hero .subtitle {
       font-family: var(--pixel);
@@ -203,35 +246,42 @@
       flex-wrap: wrap;
     }
 
+    .hero .cta-row .btn { min-width: 230px; }
+
     .btn {
       font-family: var(--pixel);
-      font-size: 10px;
+      font-size: 12px;
       padding: 16px 26px;
       text-decoration: none;
       cursor: pointer;
       border: none;
       image-rendering: pixelated;
-      transition: transform .1s, box-shadow .1s;
-      display: inline-block;
+      transition: transform .1s, box-shadow .1s, background .15s, border-color .15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .btn-primary {
       background: var(--green);
       color: #000;
-      box-shadow: 0 5px 0 var(--green2), inset 0 1px 0 rgba(255,255,255,.3);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
     }
 
     .btn-secondary {
-      background: transparent;
+      background: #131313;
       color: var(--gray);
-      border: 2px solid var(--dark-gray);
-      box-shadow: 0 4px 0 #333;
+      border: 2px solid var(--border2);
+      box-shadow: 0 4px 0 #0a0a0a, inset 0 1px 0 rgba(255,255,255,.05);
     }
 
+    .btn .gh-icon { color: var(--green); flex: none; }
+
     .btn:hover { transform: translateY(2px); }
-    .btn-primary:hover { box-shadow: 0 3px 0 var(--green2); }
-    .btn-secondary:hover { border-color: var(--gray); color: var(--white); box-shadow: 0 2px 0 #333; }
-    .btn:active { transform: translateY(5px); box-shadow: none !important; }
+    .btn-primary:hover { background: var(--green2); }
+    .btn-secondary:hover { background: #1b1b1b; border-color: var(--green); color: var(--white); box-shadow: 0 2px 0 #0a0a0a; }
+    .btn:active { transform: translateY(4px); box-shadow: none !important; }
 
     /* ─── MC WINDOW PANEL ─── */
     .mc-panel {
@@ -260,7 +310,7 @@
 
     .section-label {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 10px;
       color: var(--green2);
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -287,7 +337,7 @@
       flex-basis: 100%;
       width: 100%;
       font-family: var(--pixel);
-      font-size: 8px;
+      font-size: 10px;
       color: var(--dark-gray);
       letter-spacing: 3px;
       padding: 12px 0 4px;
@@ -316,7 +366,7 @@
 
     .feature-card h3 {
       font-family: var(--pixel);
-      font-size: 11px;
+      font-size: 12px;
       color: var(--green);
       margin-bottom: 12px;
     }
@@ -336,7 +386,7 @@
 
     .stack-pill {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 11px;
       padding: 10px 16px;
       background: #111;
       border: 2px solid var(--border);
@@ -388,7 +438,7 @@
       align-items: center;
       justify-content: center;
       font-family: var(--pixel);
-      font-size: 7px;
+      font-size: 9px;
       border: 3px solid;
       background: var(--bg);
       z-index: 1;
@@ -421,19 +471,19 @@
 
     .tl-phase {
       font-family: var(--pixel);
-      font-size: 12px;
+      font-size: 13px;
       color: var(--white);
     }
 
     .tl-phase-name {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 10px;
       color: var(--gray);
     }
 
     .tl-badge {
       font-family: var(--pixel);
-      font-size: 8px;
+      font-size: 10px;
       padding: 5px 10px;
       border: 2px solid;
       text-transform: uppercase;
@@ -473,7 +523,7 @@
 
     .tl-list li {
       font-family: var(--pixel);
-      font-size: 11px;
+      font-size: 12px;
       color: var(--gray);
       padding-left: 20px;
       position: relative;
@@ -521,7 +571,7 @@
 
     .progress-label {
       font-family: var(--pixel);
-      font-size: 8px;
+      font-size: 10px;
       color: var(--gray);
       margin-top: 8px;
     }
@@ -544,7 +594,7 @@
       align-items: center;
       gap: 10px;
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 10px;
       color: var(--gray);
     }
 
@@ -563,15 +613,15 @@
     footer {
       border-top: 3px solid var(--border);
       text-align: center;
-      padding: 40px 24px;
+      padding: 24px;
       background: #0a0a0a;
     }
 
-    footer .footer-logo {
+    .footer-logo {
       font-family: var(--pixel);
       font-size: 14px;
       color: var(--green);
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
 
     footer p {
@@ -608,9 +658,9 @@
 
     .deploy-box pre {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 12px;
       color: var(--green);
-      line-height: 2.4;
+      line-height: 1.9;
       overflow-x: auto;
       white-space: pre-wrap;
       word-break: break-all;
@@ -620,6 +670,59 @@
     .deploy-box pre .cmd { color: var(--aqua); }
     .deploy-box pre .arg { color: var(--yellow); }
 
+    .deploy-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .deploy-label {
+      font-family: var(--pixel);
+      font-size: 10px;
+      line-height: 1.7;
+      letter-spacing: 1px;
+      color: var(--green2);
+      margin: 0;
+    }
+
+    .copy-btn {
+      font-family: var(--pixel);
+      font-size: 10px;
+      color: var(--green);
+      background: #0e0e0e;
+      border: 2px solid var(--border);
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover { border-color: var(--green2); color: var(--white); }
+    .copy-btn:active { transform: translateY(2px); }
+
+    /* ─── HEADER STAR LINK ─── */
+    .nav-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--pixel);
+      font-size: 10px;
+      line-height: 1.7;
+      color: var(--gray);
+      text-decoration: none;
+      padding: 8px 10px;
+      white-space: nowrap;
+      transition: color .15s;
+    }
+
+    .nav-stars:hover { color: var(--green); }
+    .nav-stars[hidden] { display: none; }
+
+    .nav-stars-ico { color: var(--green); display: inline-flex; }
+    .nav-stars-num { color: var(--white); }
+
     /* ─── SCROLLBAR ─── */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #0a0a0a; }
@@ -628,66 +731,75 @@
 
     /* ─── TEAM ─── */
     .team-roster {
-      background: #111;
-      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
 
-    .team-member {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+    .team-block {
+      display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 16px 24px;
-      border-bottom: 2px solid #1e1e1e;
+      gap: 18px;
+      padding: 20px;
+      background: #131313;
+      border: 1px solid #1e1e1e;
       text-decoration: none;
       color: inherit;
-      transition: background .15s;
+      transition: background .15s, border-color .15s;
     }
 
-    .team-member:last-child { border-bottom: none; }
-    .team-member:hover { background: rgba(85,255,85,.06); }
+    .team-block:hover { background: #1a1a1a; border-color: #2f2f2f; }
 
-    .team-avatar {
-      width: 48px;
-      height: 48px;
-      border: 2px solid var(--border2);
-      image-rendering: pixelated;
-      flex-shrink: 0;
+    .team-block-avatar {
+      width: 96px;
+      height: 96px;
+      flex: none;
+      object-fit: cover;
+      display: block;
+      border: 2px solid #1e1e1e;
+      box-shadow: 4px 4px 0 #0a0a0a;
     }
 
-    .team-avatar--placeholder {
+    .team-block-avatar--placeholder {
       display: flex;
       align-items: center;
       justify-content: center;
       background: #1e1e1e;
       color: var(--dark-gray);
       font-family: var(--pixel);
-      font-size: 20px;
+      font-size: 24px;
     }
 
-    .team-member--dummy {
-      cursor: default;
-    }
-    .team-member--dummy:hover { background: transparent; }
+    .team-block--dummy { cursor: default; }
+    .team-block--dummy:hover { background: transparent; }
 
-    .team-link-label {
+    .team-block-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .team-block-name {
       font-family: var(--pixel);
-      font-size: 11px;
+      font-size: 12px;
       color: var(--green);
+      line-height: 1.6;
     }
-    .team-member:hover .team-link-label { color: var(--green2); }
 
-    .team-link-label .team-username {
+    .team-block-name .team-username {
+      display: block;
       color: var(--gray);
-      font-size: 10px;
+      font-size: 11px;
+      margin-top: 4px;
     }
-    .team-member:hover .team-link-label .team-username { color: var(--aqua); }
 
-    .team-role {
+    .team-block-role {
       font-size: 20px;
       color: var(--gray);
-      text-align: right;
     }
+
+    #team.section { max-width: 1100px; }
 
     /* ─── ROADMAP EXPLORER (tabs) ─── */
     .roadmap-explorer {
@@ -742,8 +854,8 @@
     }
 
     .roadmap-tab-name { font-size: 12px; }
-    .roadmap-tab-subtitle { font-size: 9px; opacity: .8; }
-    .roadmap-tab-state { font-size: 8px; color: var(--green2); }
+    .roadmap-tab-subtitle { font-size: 10px; opacity: .8; }
+    .roadmap-tab-state { font-size: 10px; color: var(--green2); }
 
     .roadmap-stage {
       padding: 32px;
@@ -754,7 +866,7 @@
 
     .roadmap-repo-label {
       font-family: var(--pixel);
-      font-size: 9px;
+      font-size: 10px;
       color: var(--green2);
       letter-spacing: 2px;
       margin-bottom: 20px;
@@ -796,7 +908,7 @@
 
     .tbd-title {
       font-family: var(--pixel);
-      font-size: 10px;
+      font-size: 11px;
       color: var(--gray);
       letter-spacing: 2px;
       line-height: 1.8;
@@ -811,7 +923,7 @@
 
     .roadmap-source {
       font-family: var(--pixel);
-      font-size: 7px;
+      font-size: 9px;
       color: var(--dark-gray);
       margin-top: 32px;
       text-align: right;
@@ -847,25 +959,57 @@
     }
 
     /* ─── RESPONSIVE ─── */
+    @media (min-width: 640px) {
+      .team-roster { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (min-width: 751px) {
+      .hero { padding-top: 160px; padding-bottom: 120px; }
+      .hero-title { flex-direction: row; gap: 28px; }
+      .hero-mark { width: 160px; height: 160px; }
+      .hero .hero-title h1 {
+        font-size: clamp(28px, 5.5vw, 58px);
+        text-shadow: 0 5px 0 var(--green2), 0 0 60px rgba(85,255,85,.4);
+      }
+      .hero .hero-title h1 span { text-shadow: 0 5px 0 #aa8800; }
+    }
+
     @media (max-width: 750px) {
       .feature-card { flex: 0 1 calc((100% - 20px) / 2); }
     }
 
     @media (max-width: 600px) {
-      nav { gap: 16px; flex-wrap: wrap; }
-      nav a { display: none; }
+      nav { gap: 10px; flex-wrap: nowrap; padding: 10px 16px; }
+      nav .logo-img { width: 40px; height: 40px; }
+      nav .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgb(10 10 10 / 98%);
+        border-bottom: 3px solid var(--border);
+        padding: 8px 16px 16px;
+        z-index: 200;
+      }
+      nav.nav-open .nav-links { display: flex; }
+      nav .nav-links a {
+        padding: 14px 8px;
+        font-size: 11px;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      nav .nav-toggle { display: inline-flex; margin-left: auto; }
       .feature-card { flex: 0 1 100%; min-width: 0; }
       .stack-grid { justify-content: center; }
-      .timeline::before { left: 14px; }
-      .tl-item { padding-left: 48px; }
-      .tl-dot { left: 2px; }
-      .tl-list { grid-template-columns: 1fr; }
-      .team-member {
-        grid-template-columns: auto 1fr;
-        grid-template-rows: auto auto;
-      }
-      .team-member .team-avatar { grid-row: 1 / -1; }
-      .team-member .team-role { grid-column: 2; text-align: left; font-size: 18px; }
+      .timeline::before { left: 12px; }
+      .tl-item { padding-left: 40px; }
+      .tl-dot { left: 2px; width: 24px; height: 24px; }
+      .tl-body { padding: 14px 16px; }
+      .tl-desc { margin-bottom: 14px; }
+      .tl-list { grid-template-columns: 1fr; gap: 12px 16px; }
+      .tl-list li { padding-left: 18px; }
       #roadmap.section { padding-left: 16px; padding-right: 16px; }
       .roadmap-tabs { gap: 4px; margin-bottom: 16px; }
       .roadmap-tab { padding: 10px 4px; font-size: 8px; }
@@ -889,14 +1033,24 @@
 
   <!-- NAV -->
   <nav>
-    <div class="logo">Mine<span>Panel</span></div>
-    <a href="#about">About</a>
-    <a href="#features">Features</a>
-    <a href="#stack">Stack</a>
-    <a href="#team">Team</a>
-    <a href="#roadmap">Roadmap</a>
-    <div class="spacer"></div>
-    <a class="github-btn" href="https://github.com/MinePanelProject" target="_blank" rel="noopener">[ GitHub ]</a>
+    <a class="logo" href="#about" aria-label="MinePanel — back to top">
+      <img class="logo-img" src="/logo-hero.png" width="256" height="256" alt="" />
+    </a>
+    <a class="nav-stars" id="gh-stars" hidden href="https://github.com/MinePanelProject/minepanel-backend" target="_blank" rel="noopener" aria-label="Star MinePanel on GitHub">
+      <span class="nav-stars-ico"><svg viewBox="0 0 14 10" width="14" height="10" aria-hidden="true" fill="currentColor"><rect x="6" y="0" width="4" height="2"/><rect x="4" y="2" width="8" height="2"/><rect x="2" y="4" width="12" height="2"/><rect x="4" y="6" width="4" height="2"/><rect x="8" y="6" width="4" height="2"/><rect x="6" y="8" width="4" height="2"/></svg></span><span class="nav-stars-label">Stars:</span><span class="nav-stars-num">0</span>
+    </a>
+    <div class="nav-links" id="mobile-menu">
+      <a href="#about">About</a>
+      <a href="#features">Features</a>
+      <a href="#stack">Stack</a>
+      <a href="#team">Team</a>
+      <a href="#roadmap">Roadmap</a>
+    </div>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle navigation">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
   </nav>
 
   <!-- GRASS TOP -->
@@ -905,8 +1059,10 @@
 
   <!-- HERO -->
   <section class="hero" id="about">
-    <p class="section-label">[ Open Source Project ]</p>
-    <h1>Mine<span>Panel</span></h1>
+    <div class="hero-title">
+      <img class="hero-mark" src="/logo-hero.png" width="256" height="256" alt="" />
+      <h1>Mine<span>Panel</span></h1>
+    </div>
     <p class="tagline">Self-hosted Minecraft server management, the right way.</p>
     <p class="subtitle">
       A single <code style="color:var(--green);background:#0d1f0d;padding:2px 6px;">docker-compose up</code>
@@ -914,8 +1070,14 @@
       No external services. No cloud lock-in. Full control.
     </p>
     <div class="cta-row">
-      <a class="btn btn-primary" href="#roadmap">View Roadmap</a>
-      <a class="btn btn-secondary" href="https://github.com/MinePanelProject" target="_blank" rel="noopener">Source Code</a>
+      <a class="btn btn-primary" href="#roadmap">
+        <svg class="rt-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"><circle cx="2.5" cy="13" r="1" fill="currentColor" stroke="none"/><path d="M2.5 12V8.5l4 1.5 4-3V3.5"/><circle cx="10.5" cy="3.5" r="1" fill="currentColor" stroke="none"/></svg>
+        View Roadmap
+      </a>
+      <a class="btn btn-secondary" href="https://github.com/MinePanelProject" target="_blank" rel="noopener">
+        <svg class="gh-icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        Source Code
+      </a>
     </div>
   </section>
 
@@ -937,7 +1099,10 @@
     <div id="stack-grid" class="stack-grid"></div>
 
     <div class="deploy-box" style="margin-top: 32px;">
-      <p style="font-family:var(--pixel);font-size:9px;color:var(--gray);margin-bottom:16px;">[ Quick Deploy ]</p>
+      <div class="deploy-head">
+        <p class="deploy-label">[ Quick Deploy ]</p>
+        <button type="button" class="copy-btn" id="copy-deploy">[ Copy ]</button>
+      </div>
       <pre><span class="comment"># Clone the repo (public release coming soon)</span>
 <span class="cmd">git clone</span> <span class="arg">https://github.com/MinePanelProject/minepanel-backend</span>
 <span class="cmd">cd</span> <span class="arg">minepanel-backend</span>
@@ -956,7 +1121,7 @@
   <div class="section" id="team">
     <p class="section-label">[ Who we are ]</p>
     <h2 class="section-title">Team</h2>
-    <div id="team-roster" class="team-roster mc-panel"></div>
+    <div id="team-roster" class="team-roster"></div>
   </div>
 
   <hr class="pixel-divider" />
@@ -1022,9 +1187,6 @@
   <footer>
     <p class="footer-logo">Mine<span style="color:var(--yellow)">Panel</span></p>
     <p>Open source. Self-hosted. No cloud required.</p>
-    <p style="margin-top:8px;">
-      <a href="https://github.com/MinePanelProject" target="_blank" rel="noopener">github.com/MinePanelProject</a>
-    </p>
     <p style="margin-top:20px;font-size:15px;">
       Not affiliated with Mojang Studios or Microsoft.
       Minecraft is a trademark of Mojang Synergies AB.
@@ -1047,6 +1209,8 @@
     }
 
     const BADGE_LABEL = { done: 'Completed', wip: 'In Progress', planned: 'Planned', future: 'Future' };
+    const NORMAL_STATUS = { completed: 'done', done: 'done', wip: 'wip', planned: 'planned', future: 'future' };
+    const norm = s => Object.hasOwn(NORMAL_STATUS, s) ? NORMAL_STATUS[s] : 'planned';
 
     const EMPTY_STATE = {
       backend: {
@@ -1076,27 +1240,28 @@
           '</div>';
         return;
       }
-      const isCompleted = p => p.status === 'completed' || p.status === 'done';
+      const isCompleted = p => norm(p.status) === 'done';
       // first phase immediately following a completed phase stays open by default
       const firstAfterCompleted = data.phases.findIndex((p, i) => !isCompleted(p) && isCompleted(data.phases[i - 1]));
       el.innerHTML = data.phases.map((p, i) => {
         const hasProgress = p.progress != null;
+        const prog = hasProgress ? Math.min(100, Math.max(0, Number(p.progress) || 0)) : null;
         const progressHTML = hasProgress ? `
           <div class="progress-bar-wrap">
-            <div class="progress-bar-fill" style="width:${p.progress}%;"></div>
+            <div class="progress-bar-fill" style="width:${prog}%;"></div>
           </div>
-          <p class="progress-label">${esc(p.progressLabel || p.progress + '% complete')}</p>` : '';
+          <p class="progress-label">${esc(p.progressLabel || prog + '% complete')}</p>` : '';
         const itemsHTML = (p.items || []).map(item =>
           `<li class="${item.done ? 'done' : ''}">${esc(item.text)}</li>`
         ).join('');
-        const collapsed = p.status !== 'wip' && i !== firstAfterCompleted ? ' phase-collapsed' : '';
+        const collapsed = norm(p.status) !== 'wip' && i !== firstAfterCompleted ? ' phase-collapsed' : '';
         return `
-          <div class="tl-phase-block tl-item ${esc(p.status)}${collapsed}">
-            <div class="tl-dot ${esc(p.status)}">${esc(p.id)}</div>
+          <div class="tl-phase-block tl-item ${norm(p.status)}${collapsed}">
+            <div class="tl-dot ${norm(p.status)}">${esc(p.id)}</div>
             <div class="tl-phase-toggle tl-header">
               <span class="tl-phase">${esc(p.label)}</span>
               <span class="tl-phase-name">${esc(p.name)}</span>
-              <span class="tl-badge ${esc(p.status)}">${BADGE_LABEL[p.status] || esc(p.status)}</span>
+              <span class="tl-badge ${norm(p.status)}">${BADGE_LABEL[norm(p.status)] || esc(p.status)}</span>
             </div>
             <div class="tl-body">
               <p class="tl-desc">${esc(p.description)}</p>
@@ -1118,9 +1283,11 @@
       const current = data.features.filter(f => !f.coming);
       const coming  = data.features.filter(f => f.coming);
 
+      const ACCENT = { aqua: 'aqua', yellow: 'yellow' };
       const renderCard = f => {
-        const accentColor = f.color ? `var(--${esc(f.color)})` : 'var(--border)';
-        const titleColor  = f.color ? `var(--${esc(f.color)})` : 'var(--green)';
+        const accent = f.color && Object.hasOwn(ACCENT, f.color) ? ACCENT[f.color] : null;
+        const accentColor = accent ? `var(--${accent})` : 'var(--border)';
+        const titleColor  = accent ? `var(--${accent})` : 'var(--green)';
         const borderStyle = `style="border-left-color:${accentColor}${f.coming ? ';border-left-style:dashed' : ''};"`;
         return `<div class="feature-card mc-panel${f.coming ? ' coming' : ''}" ${borderStyle}>
           <span class="icon">${esc(f.icon)}</span>
@@ -1143,17 +1310,19 @@
       roster.innerHTML = data.team.map(m => {
         const hasGitHub = m.github && m.username;
         const avatarHTML = hasGitHub
-          ? `<img class="team-avatar" src="https://github.com/${esc(m.username)}.png?size=96" alt="" />`
-          : `<div class="team-avatar team-avatar--placeholder">?</div>`;
+          ? `<img class="team-block-avatar" src="https://github.com/${esc(m.username)}.png?size=128" alt="" loading="lazy" />`
+          : `<span class="team-block-avatar team-block-avatar--placeholder">?</span>`;
         const namePart = m.username
           ? `${esc(m.name)} <span class="team-username">(@${esc(m.username)})</span>`
           : esc(m.name);
         const inner = `${avatarHTML}
-          <span class="team-link-label">${namePart}</span>
-          <span class="team-role">${esc(m.role || '')}</span>`;
+          <span class="team-block-info">
+            <span class="team-block-name">${namePart}</span>
+            <span class="team-block-role">${esc(m.role || '')}</span>
+          </span>`;
         return hasGitHub
-          ? `<a class="team-member" href="${esc(m.github)}" target="_blank" rel="noopener">${inner}</a>`
-          : `<div class="team-member team-member--dummy">${inner}</div>`;
+          ? `<a class="team-block" href="${esc(m.github)}" target="_blank" rel="noopener">${inner}</a>`
+          : `<div class="team-block team-block--dummy">${inner}</div>`;
       }).join('');
     }
 
@@ -1179,6 +1348,44 @@
         if (!res.ok) return null;
         return await res.json();
       } catch (_) { return null; }
+    }
+
+    async function renderProjectStatus() {
+      const starsEl = document.getElementById('gh-stars');
+      if (!starsEl) return;
+      try {
+        const repo = await safeFetch('https://api.github.com/repos/MinePanelProject/minepanel-backend');
+        if (!repo || typeof repo.stargazers_count !== 'number') return;
+        starsEl.querySelector('.nav-stars-num').textContent = repo.stargazers_count;
+        starsEl.hidden = false;
+      } catch (_) { /* chip stays hidden */ }
+    }
+
+    function initCopyButton() {
+      const btn = document.getElementById('copy-deploy');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const pre = btn.closest('.deploy-box').querySelector('pre');
+        if (!pre) return;
+        const text = pre.textContent;
+        let ok = false;
+        try {
+          await navigator.clipboard.writeText(text);
+          ok = true;
+        } catch (_) {
+          try {
+            const range = document.createRange();
+            range.selectNodeContents(pre);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            ok = document.execCommand('copy');
+            sel.removeAllRanges();
+          } catch (_2) { ok = false; }
+        }
+        btn.textContent = ok ? '[ Copied! ]' : '[ Copy failed ]';
+        setTimeout(() => { btn.textContent = '[ Copy ]'; }, 2000);
+      });
     }
 
     function initRoadmapTabs(roadmapData) {
@@ -1257,9 +1464,44 @@
       renderTimeline('timeline-mobile', mobile, EMPTY_STATE.mobile);
 
       initRoadmapTabs(roadmapData);
+      renderProjectStatus();
+      initCopyButton();
     }
 
     document.addEventListener('DOMContentLoaded', init);
+
+    /* ─── Mobile nav toggle ─── */
+    (function () {
+      const nav = document.querySelector('nav');
+      const toggle = document.querySelector('.nav-toggle');
+      if (!nav || !toggle) return;
+
+      function setOpen(open) {
+        nav.classList.toggle('nav-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+      }
+
+      toggle.addEventListener('click', () => {
+        setOpen(!nav.classList.contains('nav-open'));
+      });
+
+      nav.querySelectorAll('.nav-links a').forEach(a => {
+        a.addEventListener('click', () => setOpen(false));
+      });
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && nav.classList.contains('nav-open')) {
+          setOpen(false);
+          toggle.focus();
+        }
+      });
+
+      document.addEventListener('click', e => {
+        if (nav.classList.contains('nav-open') && !nav.contains(e.target)) {
+          setOpen(false);
+        }
+      });
+    })();
   </script>
 </body>
 </html>
