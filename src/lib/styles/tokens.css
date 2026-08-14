@@ -1,0 +1,19 @@
+:root {
+  --bg:        #0d0d0d;
+  --bg2:       #141414;
+  --panel:     #1a1a2e;
+  --border:    #2d5a27;
+  --border2:   #3d7a37;
+  --green:     #55ff55;
+  --green2:    #33cc33;
+  --yellow:    #ffff55;
+  --white:     #ffffff;
+  --gray:      #aaaaaa;
+  --dark-gray: #555555;
+  --red:       #ff5555;
+  --aqua:      #55ffff;
+  --gold:      #ffaa00;
+  --purple:    #aa00ff;
+  --pixel:     'Press Start 2P', monospace;
+  --vt:        'VT323', monospace;
+}

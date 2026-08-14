@@ -1,1 +1,7 @@
-Archive.zip
+node_modules/
+.svelte-kit/
+build/
+test-results/
+playwright-report/
+.wrangler/
+.env*
