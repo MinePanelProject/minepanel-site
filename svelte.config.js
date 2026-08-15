@@ -11,8 +11,9 @@ const config = {
 			routes: {
 				// All routes match the function (include: ['/*']); `<all>`
 				// excludes build artifacts, static files, and prerendered routes
-				// at build time. Future `prerender = false` routes are therefore
-				// served by the Pages function automatically — no config change.
+				// at build time. The landing page is served at runtime
+				// (`prerender = false`, 12h edge cache), so the function
+				// re-fetches site data automatically — no manual redeploys.
 				include: ['/*'],
 				exclude: ['<all>']
 			}
