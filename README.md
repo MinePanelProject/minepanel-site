@@ -1,68 +1,62 @@
-# MinePanel Site — migrated codebase
+# MinePanel Site
 
-Static-first SvelteKit migration of the single-file landing page. Rendered output is
-**pixel-identical** to the current root `index.html`; all content is fetched and rendered
-at **build time** (no client-side data loading). The old site at the repo root remains the
-production source of truth until this migration is reviewed and cut over.
+Static-first [SvelteKit](https://svelte.dev/kit) site for [minepanel.xyz](https://minepanel.xyz) — the MinePanel marketing / landing page.
 
-## Framework decision
-
-- **SvelteKit** with **`@sveltejs/adapter-cloudflare`** (current stable), TypeScript, Vite underneath.
-- Why not bare Vite? Vite alone is a bundler/dev server — treating this as a Vite SPA would
-  add client-side rendering and violate the build-time content requirement.
-- Why not Astro? Astro would otherwise be the best zero-JS static-first choice, but the
-  requirement is **future SSR on Cloudflare Pages**. Current `@astrojs/cloudflare` (v13+)
-  removed Cloudflare Pages support and targets Workers only; keeping Pages SSR would mean
-  pinning an obsolete Astro 5/adapter 12 stack, creating immediate version debt.
-  See <https://docs.astro.build/en/guides/integrations-guide/cloudflare/#removed-cloudflare-pages-support>.
-- SvelteKit's official adapter supports both Cloudflare Pages and Workers, produces
-  prerendered routes plus a Pages worker for future dynamic routes, and supports
-  route-level `prerender` overrides.
-  See <https://svelte.dev/docs/kit/adapter-cloudflare> and <https://svelte.dev/docs/kit/page-options>.
-
-The landing route is configured in `src/routes/+layout.ts` with
-`ssr = true`, `prerender = true`, `csr = false` — emitted as static HTML, no client runtime.
-The only client JavaScript is `static/interactions.js` (mobile menu, roadmap tabs,
-phase collapse, copy button) — it manipulates already-rendered DOM only, no fetching.
+TypeScript, SvelteKit, and [`@sveltejs/adapter-cloudflare`](https://svelte.dev/docs/kit/adapter-cloudflare). The site is fully prerendered: content is fetched, validated, and baked into static HTML at build time, so the landing page ships as static assets with no client-side data fetching or server runtime.
 
 ## Requirements
 
-- Bun (install/scripts) and Node 22.12.x (see `.node-version` and `package.json#engines`).
-- Nothing is installed globally.
+- [Bun](https://bun.sh) for installing and running scripts
+- Node 22.12.x (see `.node-version` and `package.json#engines`)
 
 ## Commands
 
 ```bash
-bun install
-bun run check          # svelte-check, zero errors expected
+bun install            # install dependencies
+bun run dev            # Vite dev server with HMR
+bun run check          # svelte-check type checks
 bun run build          # prerender into .svelte-kit/cloudflare
-bun run pages:preview  # wrangler pages dev .svelte-kit/cloudflare (local Pages output)
-bun run parity         # playwright pixel/interaction parity vs root index.html
+bun run pages:preview  # serve the build locally (wrangler pages dev)
+bun run parity         # Playwright parity suite vs. the pre-migration site
 ```
 
-## Architecture
+## Structure
 
 ```
 src/
   routes/
-    +layout.ts         # ssr/prerender/csr flags
-    +layout.svelte     # head metadata + global styles
+    +layout.ts         # ssr / prerender / csr page flags (prerender = true)
+    +layout.svelte     # <head> metadata + global styles
     +page.server.ts    # loads site data once at build time
-    +page.svelte       # composes sections
+    +page.svelte       # composes the page sections
   lib/
-    components/        # Nav, Hero, Features, TechStack, QuickDeploy, Team, Footer,
-                       # roadmap/* (RoadmapExplorer, RoadmapTabs, StatusKey, Timeline,
-                       # Phase, EmptyState), TerrainStrip
-    data/              # endpoints, types, validate (type guards + allowlists),
-                       # normalize, fallbacks (exact empty-state copy), load-site-data
-    styles/            # tokens.css, global.css, primitives.css, roadmap.css
-static/                # favicon.png, logo-hero.png, icon-512.png, og.png, interactions.js
+    components/        # page sections: Nav, Hero, Features, TechStack,
+                       # QuickDeploy, Team, Footer, roadmap/*
+    data/              # endpoints, types, validation, fallbacks, load-site-data
+    styles/            # design tokens + global CSS
+static/                # favicon, og.png, logo-hero.png, icon-512.png, interactions.js
+scripts/               # serve-reference.ts (reference server for the parity suite)
+tests/                 # parity.spec.ts (Playwright parity tests)
+docs/                  # deployment notes
 ```
 
-Data flow: `+page.server.ts` → `loadSiteData()` fetches the three roadmap/content JSONs and
-the GitHub API in parallel (`Promise.allSettled`-style, 8s abort timeout), validates every
-field with type guards, normalizes into safe view models, and passes them to components.
-Components render only through Svelte text/attribute interpolation (no `{@html}`,
-no `innerHTML`) — the old `esc()` security property is preserved by the framework.
+## Content
 
-See `docs/deployment.md` for the review-only Cloudflare Pages cutover plan.
+All copy is fetched at build time by `+page.server.ts` → `loadSiteData()`, which pulls the content JSONs and the GitHub API in parallel, validates every field with type guards, and normalizes them into view models:
+
+- [minepanel-site.json](https://github.com/MinePanelProject/minepanel-backend/blob/master/minepanel-site.json) (minepanel-backend)
+- `roadmap.json` from [minepanel-frontend](https://github.com/MinePanelProject/minepanel-frontend) and [minepanel-mobile](https://github.com/MinePanelProject/minepanel-mobile)
+- GitHub repo stats for the star counter
+
+Each fetch is independent with a timeout; a failing source only degrades its own section. The only client-side JavaScript is `static/interactions.js` (mobile menu, roadmap tabs, phase collapse, copy button) — it manipulates already-rendered DOM, no fetching.
+
+## Deployment
+
+Hosted on **Cloudflare Pages**, Git-connected to this repo:
+
+- production branch: `main`
+- build command: `bun run build`
+- output directory: `.svelte-kit/cloudflare`
+- Node version: 22.12.x
+
+Every push to `main` auto-deploys to production. Preview deployments are created for pull requests; rollbacks are available in the Cloudflare dashboard. The runtime compatibility flag `nodejs_als` is set in `wrangler.jsonc`.
