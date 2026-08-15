@@ -13,11 +13,10 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<Nav stars={data.site.stars} />
-<TerrainStrip variant="top" />
+<Nav />
 <Hero githubHref={data.site.githubHref} />
 
-<hr class="pixel-divider" />
+<TerrainStrip variant="transition" />
 
 <div class="section" id="features">
 	<p class="section-label">[ What it does ]</p>
@@ -25,7 +24,7 @@
 	<Features features={data.site.features} />
 </div>
 
-<hr class="pixel-divider" />
+<TerrainStrip variant="transition" />
 
 <div class="section" id="stack">
 	<p class="section-label">[ Built with ]</p>
@@ -34,7 +33,7 @@
 	<QuickDeploy />
 </div>
 
-<hr class="pixel-divider" />
+<TerrainStrip variant="transition" />
 
 <div class="section" id="team">
 	<p class="section-label">[ Who we are ]</p>
@@ -42,7 +41,6 @@
 	<Team team={data.site.team} />
 </div>
 
-<hr class="pixel-divider" />
 <TerrainStrip variant="transition" />
 
 <RoadmapExplorer tracks={data.site.tracks} />

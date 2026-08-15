@@ -65,6 +65,4 @@ export interface SiteData {
 	tracks: RoadmapTrack[];
 	/** validated https github org URL */
 	githubHref: string;
-	/** star count or null (hidden) */
-	stars: number | null;
 }

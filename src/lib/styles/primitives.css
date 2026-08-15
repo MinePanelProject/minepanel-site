@@ -61,20 +61,8 @@
   font-family: var(--pixel);
   font-size: clamp(16px, 3vw, 26px);
   color: var(--white);
-  margin-bottom: 40px;
+  margin-bottom: 32px;
   text-shadow: 0 3px 0 #222;
-}
-
-/* ─── DIVIDER ─── */
-.pixel-divider {
-  border: none;
-  height: 4px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--border) 0px, var(--border) 8px,
-    transparent 8px, transparent 16px
-  );
-  margin: 0;
 }
 
 /* ─── BUTTONS ─── */
@@ -101,7 +89,7 @@
 
 .btn-secondary {
   background: #131313;
-  color: var(--gray);
+  color: var(--white);
   border: 2px solid var(--border2);
   box-shadow: 0 4px 0 #0a0a0a, inset 0 1px 0 rgba(255,255,255,.05);
 }

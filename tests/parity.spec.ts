@@ -541,13 +541,8 @@ test.describe('interaction + a11y parity', () => {
 		await expect(page.locator('.stack-pill')).toHaveCount(13);
 		await expect(page.locator('.team-block')).toHaveCount(3);
 		await expect(page.locator('.tl-phase-block')).toHaveCount(6);
-		// stars element always exists; visible with a number when the build-time
-		// GitHub API call succeeded, hidden when it was rate-limited/unavailable
-		await expect(page.locator('#gh-stars')).toHaveCount(1);
-		const starsHidden = await page.locator('#gh-stars').getAttribute('hidden');
-		if (starsHidden === null) {
-			await expect(page.locator('#gh-stars .nav-stars-num')).toHaveText(/\d+/);
-		}
+		// tagline sits next to the logo; no star counter / GitHub API call at build
+		await expect(page.locator('.nav-tagline')).toHaveText('Self-Hosted Minecraft Server Manager');
 		await ctx.close();
 	});
 });
@@ -798,7 +793,6 @@ test.describe('data layer: security and envelope fixtures', () => {
 			},
 			frontend: null,
 			mobile: null,
-			repo: {},
 			fallbackGithub: 'https://github.com/MinePanelProject'
 		});
 		expect(data.githubHref).toBe('https://github.com/MinePanelProject'); // javascript: rejected

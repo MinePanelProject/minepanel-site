@@ -209,18 +209,10 @@ export function parseGithubHref(v: unknown, fallback: string): string {
 	return fallback;
 }
 
-export function parseStars(v: unknown): number | null {
-	if (!isRecord(v)) return null;
-	const n = v.stargazers_count;
-	if (typeof n !== 'number' || !Number.isFinite(n) || n < 0) return null;
-	return Math.floor(n);
-}
-
 export function buildSiteData(args: {
 	backend: unknown;
 	frontend: unknown;
 	mobile: unknown;
-	repo: unknown;
 	fallbackGithub: string;
 }): SiteData {
 	const backendRec = isRecord(args.backend) ? args.backend : null;
@@ -238,7 +230,6 @@ export function buildSiteData(args: {
 		stack: backendRec ? parseStack(backendRec.techStack) : [],
 		team: backendRec ? parseTeam(backendRec.team) : [],
 		githubHref,
-		stars: parseStars(args.repo),
 		tracks: [
 			buildTrack(
 				'backend',

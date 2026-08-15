@@ -13,7 +13,7 @@ nav {
   padding: 16px 32px;
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 16px;
 }
 
 nav .logo {
@@ -35,7 +35,7 @@ nav .logo-img {
 nav a {
   font-family: var(--pixel);
   font-size: 11px;
-  color: var(--gray);
+  color: var(--white);
   text-decoration: none;
   transition: color .15s;
   padding: 8px 6px;
@@ -74,32 +74,35 @@ nav a:hover { color: var(--green); }
   transition: transform .15s, opacity .15s;
 }
 
-.nav-stars {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+.nav-tagline {
   font-family: var(--pixel);
   font-size: 10px;
-  line-height: 1.7;
-  color: var(--gray);
-  text-decoration: none;
-  padding: 8px 10px;
+  line-height: 16px;
+  color: var(--white);
   white-space: nowrap;
-  transition: color .15s;
 }
 
-.nav-stars:hover { color: var(--green); }
-.nav-stars[hidden] { display: none; }
-
-.nav-stars-ico { color: var(--green); display: inline-flex; }
-.nav-stars-num { color: var(--white); }
+@media (max-width: 900px) {
+  .nav-tagline { display: none; }
+}
 
 /* ─── HERO ─── */
 .hero {
   text-align: center;
-  padding: 100px 24px 80px;
+  /* symmetric padding (keeps centering exact); 11.2vh = 100px at 893px+,
+     shrinks on short viewports so content never overflows */
+  padding: clamp(48px, 11.2vh, 100px) 24px;
   background: radial-gradient(ellipse at 50% 0%, rgba(85,255,85,.07) 0%, transparent 70%);
   position: relative;
+  /* -85px pulls the hero under the sticky nav (16+16 padding + 50px logo +
+     3px border), so flex centering lands on the exact viewport center */
+  margin-top: -85px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-title {
@@ -117,8 +120,9 @@ nav a:hover { color: var(--green); }
 }
 
 .hero-mark {
-  width: 120px;
-  height: 120px;
+  /* 14.2vh = 120px at 845px+ heights; shrinks below that to avoid overflow */
+  width: clamp(64px, 14.2vh, 120px);
+  height: clamp(64px, 14.2vh, 120px);
   display: block;
   flex: none;
 }
@@ -140,7 +144,7 @@ nav a:hover { color: var(--green); }
   font-family: var(--pixel);
   font-size: clamp(9px, 1.8vw, 13px);
   color: var(--gray);
-  margin: 28px auto 48px;
+  margin: clamp(16px, 3.1vh, 28px) auto clamp(20px, 5.7vh, 48px);
   max-width: 680px;
   line-height: 2.4;
 }
@@ -148,7 +152,7 @@ nav a:hover { color: var(--green); }
 .hero .tagline {
   font-size: 28px;
   color: var(--aqua);
-  margin-bottom: 48px;
+  margin-bottom: clamp(20px, 5.7vh, 48px);
   letter-spacing: 1px;
 }
 
@@ -160,6 +164,28 @@ nav a:hover { color: var(--green); }
 }
 
 .hero .cta-row .btn { min-width: 230px; }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--green);
+  transition: color .15s;
+}
+
+.scroll-hint:hover { color: var(--green2); }
+
+.scroll-hint svg {
+  display: block;
+  animation: scroll-bounce 2s ease-in-out infinite;
+  image-rendering: pixelated;
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(6px); }
+}
 
 /* ─── FEATURE GRID ─── */
 .features-grid {
@@ -292,14 +318,16 @@ nav a:hover { color: var(--green); }
 .team-roster {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 24px;
 }
 
 .team-block {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: 18px;
-  padding: 20px;
+  padding: 36px 24px 32px;
   background: #131313;
   border: 1px solid #1e1e1e;
   text-decoration: none;
@@ -310,8 +338,8 @@ nav a:hover { color: var(--green); }
 .team-block:hover { background: #1a1a1a; border-color: #2f2f2f; }
 
 .team-block-avatar {
-  width: 96px;
-  height: 96px;
+  width: 128px;
+  height: 128px;
   flex: none;
   object-fit: cover;
   display: block;
@@ -326,7 +354,7 @@ nav a:hover { color: var(--green); }
   background: #1e1e1e;
   color: var(--dark-gray);
   font-family: var(--pixel);
-  font-size: 24px;
+  font-size: 32px;
 }
 
 .team-block--dummy { cursor: default; }
@@ -335,6 +363,7 @@ nav a:hover { color: var(--green); }
 .team-block-info {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 8px;
   min-width: 0;
 }
@@ -545,9 +574,11 @@ footer p {
 }
 
 @media (min-width: 751px) {
-  .hero { padding-top: 160px; padding-bottom: 120px; }
+  /* symmetric padding keeps content centered on the exact viewport center;
+     17.8vh = 160px at 900px+ heights */
+  .hero { padding-top: clamp(64px, 17.8vh, 160px); padding-bottom: clamp(64px, 17.8vh, 160px); }
   .hero-title { flex-direction: row; gap: 28px; }
-  .hero-mark { width: 160px; height: 160px; }
+  .hero-mark { width: clamp(96px, 17.8vh, 160px); height: clamp(96px, 17.8vh, 160px); }
   .hero .hero-title h1 {
     font-size: clamp(28px, 5.5vw, 58px);
     text-shadow: 0 5px 0 var(--green2), 0 0 60px rgba(85,255,85,.4);
@@ -560,6 +591,15 @@ footer p {
 }
 
 @media (max-width: 600px) {
+  .hero {
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* mobile nav: 10+10 padding + 44px toggle + 3px border = 67px */
+    margin-top: -67px;
+    /* 4.5vh = 40px at 889px+ heights; shrinks on short phones */
+    padding: clamp(24px, 4.5vh, 40px) 16px;
+  }
+  .hero-title { gap: clamp(8px, 1.7vh, 16px); }
   nav { gap: 10px; flex-wrap: nowrap; padding: 10px 16px; }
   nav .logo-img { width: 40px; height: 40px; }
   nav .nav-links {
@@ -600,4 +640,32 @@ footer p {
   .tbd-block { min-height: 160px; padding: 28px 16px; }
   .roadmap-source { text-align: left; }
   #roadmap.section { padding-left: 16px; padding-right: 16px; }
+}
+
+/* Short viewports (landscape phones/tablets, short laptops): compact hero so
+   content never overflows the fold. Symmetric values keep exact centering. */
+@media (max-height: 650px) {
+  .hero { padding-top: 56px; padding-bottom: 56px; }
+  .hero-mark { width: 96px; height: 96px; }
+  .hero h1 { font-size: 34px; }
+  .hero .tagline { font-size: 20px; margin-bottom: 24px; }
+  .hero .subtitle { margin-top: 12px; margin-bottom: 24px; }
+  .hero .cta-row .btn { min-width: 200px; }
+  .btn { padding: 12px 20px; }
+}
+
+/* Short phones (e.g. 375x667): tighten further so the title clears the nav */
+@media (max-height: 720px) and (max-width: 600px) {
+  .hero { padding-top: 24px; padding-bottom: 24px; }
+  .hero-mark { width: 80px; height: 80px; }
+  .hero-title { gap: 8px; }
+  .hero .tagline { margin-bottom: 28px; }
+  .hero .subtitle { margin-top: 16px; margin-bottom: 28px; }
+}
+
+/* Extreme short viewports: content cannot fit a full page, so fall back to
+   natural flow below the nav — nothing is ever clipped or hidden. */
+@media (max-height: 600px) {
+  .hero { min-height: 0; margin-top: 0; }
+  .scroll-hint { display: none; }
 }

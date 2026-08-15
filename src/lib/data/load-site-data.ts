@@ -1,4 +1,4 @@
-import { BACKEND_URL, DEFAULT_GITHUB_ORG_URL, FRONTEND_URL, GITHUB_REPO_URL, MOBILE_URL } from './endpoints';
+import { BACKEND_URL, DEFAULT_GITHUB_ORG_URL, FRONTEND_URL, MOBILE_URL } from './endpoints';
 import { buildSiteData } from './validate';
 import type { SiteData } from './types';
 
@@ -24,12 +24,11 @@ async function fetchJson(url: string): Promise<unknown | null> {
  * Every endpoint is independent: a failure only degrades its own section.
  */
 export async function loadSiteData(): Promise<SiteData> {
-	const [backend, frontend, mobile, repo] = await Promise.all([
+	const [backend, frontend, mobile] = await Promise.all([
 		fetchJson(BACKEND_URL),
 		fetchJson(FRONTEND_URL),
-		fetchJson(MOBILE_URL),
-		fetchJson(GITHUB_REPO_URL)
+		fetchJson(MOBILE_URL)
 	]);
 
-	return buildSiteData({ backend, frontend, mobile, repo, fallbackGithub: DEFAULT_GITHUB_ORG_URL });
+	return buildSiteData({ backend, frontend, mobile, fallbackGithub: DEFAULT_GITHUB_ORG_URL });
 }
