@@ -1,6 +1,6 @@
 # MinePanel Site
 
-Static-first [SvelteKit](https://svelte.dev/kit) site for [minepanel.xyz](https://minepanel.xyz) — the MinePanel marketing / landing page.
+Static-first [SvelteKit](https://svelte.dev/kit) site for [minepanel.xyz](https://minepanel.xyz) - the MinePanel marketing / landing page.
 
 TypeScript, SvelteKit, and [`@sveltejs/adapter-cloudflare`](https://svelte.dev/docs/kit/adapter-cloudflare). The site is fully prerendered: content is fetched, validated, and baked into static HTML at build time, so the landing page ships as static assets with no client-side data fetching or server runtime.
 
@@ -48,7 +48,7 @@ All copy is fetched at build time by `+page.server.ts` → `loadSiteData()`, whi
 - `roadmap.json` from [minepanel-frontend](https://github.com/MinePanelProject/minepanel-frontend) and [minepanel-mobile](https://github.com/MinePanelProject/minepanel-mobile)
 - GitHub repo stats for the star counter
 
-Each fetch is independent with a timeout; a failing source only degrades its own section. The only client-side JavaScript is `static/interactions.js` (mobile menu, roadmap tabs, phase collapse, copy button) — it manipulates already-rendered DOM, no fetching.
+Each fetch is independent with a timeout; a failing source only degrades its own section. The only client-side JavaScript is `static/interactions.js` (mobile menu, roadmap tabs, phase collapse, copy button) - it manipulates already-rendered DOM, no fetching.
 
 ## Deployment
 
