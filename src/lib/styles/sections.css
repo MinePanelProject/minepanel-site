@@ -563,9 +563,47 @@ footer {
   margin-bottom: 12px;
 }
 
-footer p {
-  font-size: 20px;
-  color: var(--dark-gray);
+/* ─── BACK TO TOP ─── */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: #131313;
+  color: var(--green);
+  border: 2px solid var(--border2);
+  box-shadow: 0 4px 0 #0a0a0a, inset 0 1px 0 rgba(255,255,255,.05);
+  cursor: pointer;
+  z-index: 100;
+  transition: transform .1s, box-shadow .1s, background .15s, border-color .15s, color .15s;
+}
+
+.back-to-top.visible { display: flex; }
+
+.back-to-top:hover {
+  transform: translateY(2px);
+  background: #1b1b1b;
+  border-color: var(--green);
+  color: var(--white);
+  box-shadow: 0 2px 0 #0a0a0a;
+}
+
+.back-to-top:active {
+  transform: translateY(4px);
+  box-shadow: none !important;
+}
+
+.back-to-top:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top { transition: none; }
 }
 
 /* ─── RESPONSIVE ─── */

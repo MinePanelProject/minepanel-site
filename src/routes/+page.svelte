@@ -7,7 +7,7 @@
 	import TechStack from '$lib/components/TechStack.svelte';
 	import QuickDeploy from '$lib/components/QuickDeploy.svelte';
 	import Team from '$lib/components/Team.svelte';
-	import Footer from '$lib/components/Footer.svelte';
+	import BackToTop from '$lib/components/BackToTop.svelte';
 	import RoadmapExplorer from '$lib/components/roadmap/RoadmapExplorer.svelte';
 
 	let { data }: { data: PageData } = $props();
@@ -45,5 +45,4 @@
 
 <RoadmapExplorer tracks={data.site.tracks} />
 
-<TerrainStrip variant="bottom" />
-<Footer />
+<BackToTop />

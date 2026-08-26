@@ -117,4 +117,23 @@
 			}, 2000);
 		});
 	})();
+
+	/* ─── Back to top ─── */
+	(function () {
+		const btn = document.querySelector('.back-to-top');
+		if (!btn) return;
+		const SHOW_AFTER = 600;
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+		function update() {
+			btn.classList.toggle('visible', window.scrollY > SHOW_AFTER);
+		}
+
+		btn.addEventListener('click', () => {
+			window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+		});
+
+		window.addEventListener('scroll', update, { passive: true });
+		update();
+	})();
 })();
