@@ -1,20 +1,25 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Nav from '$lib/components/Nav.svelte';
-	import TerrainStrip from '$lib/components/TerrainStrip.svelte';
-	import Hero from '$lib/components/Hero.svelte';
-	import Features from '$lib/components/Features.svelte';
-	import TechStack from '$lib/components/TechStack.svelte';
-	import QuickDeploy from '$lib/components/QuickDeploy.svelte';
-	import Team from '$lib/components/Team.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
+	import Features from '$lib/components/Features.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import Hero from '$lib/components/Hero.svelte';
+	import Nav from '$lib/components/Nav.svelte';
+	import ProjectStatus from '$lib/components/ProjectStatus.svelte';
+	import QuickDeploy from '$lib/components/QuickDeploy.svelte';
 	import RoadmapExplorer from '$lib/components/roadmap/RoadmapExplorer.svelte';
+	import Team from '$lib/components/Team.svelte';
+	import TechStack from '$lib/components/TechStack.svelte';
+	import TerrainStrip from '$lib/components/TerrainStrip.svelte';
 
 	let { data }: { data: PageData } = $props();
 </script>
 
 <Nav />
 <Hero githubHref={data.site.githubHref} />
+
+<TerrainStrip variant="transition" />
+<ProjectStatus />
 
 <TerrainStrip variant="transition" />
 
@@ -40,9 +45,11 @@
 	<h2 class="section-title">Team</h2>
 	<Team team={data.site.team} />
 </div>
-
 <TerrainStrip variant="transition" />
 
 <RoadmapExplorer tracks={data.site.tracks} />
 
+<Footer githubHref={data.site.githubHref} />
+
 <BackToTop />
+

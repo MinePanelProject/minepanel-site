@@ -1,5 +1,7 @@
 <script lang="ts">
 	let { githubHref }: { githubHref: string } = $props();
+	const deployHref = 'https://github.com/MinePanelProject/minepanel-backend#quick-deploy';
+	const webAppHref = 'https://app.minepanel.xyz';
 </script>
 
 <section class="hero" id="about">
@@ -10,11 +12,10 @@
 	<p class="tagline">Self-hosted Minecraft server management, the right way.</p>
 	<p class="subtitle">
 		A single <code style="color:var(--green);background:#0d1f0d;padding:2px 6px;">docker-compose up</code>
-		brings up the entire stack on your own machine.
-		No external services. No cloud lock-in. Full control.
+		brings up the stack on your own machine. No cloud lock-in. Full control.
 	</p>
 	<div class="cta-row">
-		<a class="btn btn-primary" href="#roadmap">
+		<a class="btn btn-primary" href={deployHref} target="_blank" rel="noopener">
 			<svg
 				class="rt-icon"
 				viewBox="0 0 16 16"
@@ -26,30 +27,33 @@
 				stroke-width="1.5"
 				stroke-linecap="square"
 				stroke-linejoin="miter"
-				><circle cx="2.5" cy="13" r="1" fill="currentColor" stroke="none" /><path d="M2.5 12V8.5l4 1.5 4-3V3.5" /><circle
-					cx="10.5"
-					cy="3.5"
-					r="1"
-					fill="currentColor"
-					stroke="none"
-				/></svg
+				><path d="M2 8h12M9 3l5 5-5 5" /></svg
 			>
-			View Roadmap
+			Get Started
 		</a>
-		<a class="btn btn-secondary" href={githubHref} target="_blank" rel="noopener">
+		<a class="btn btn-secondary" href={webAppHref} target="_blank" rel="noopener">
 			<svg
-				class="gh-icon"
+				class="rt-icon"
 				viewBox="0 0 16 16"
 				width="16"
 				height="16"
 				aria-hidden="true"
-				fill="currentColor"
-				><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.5"
+				stroke-linecap="square"
+				stroke-linejoin="miter"
+				><rect x="2" y="2" width="12" height="9" /><path d="M5 14h6M8 11v3" /></svg
 			>
-			Source Code
+			Open Web App
 		</a>
 	</div>
-	<a class="scroll-hint" href="#features" aria-label="Scroll down to features">
+	<p class="hero-app-note">Hosted dashboard for your self-hosted MinePanel instance.</p>
+	<div class="hero-links">
+		<a href={githubHref} target="_blank" rel="noopener">Source Code</a>
+		<a href="#roadmap">Roadmap</a>
+	</div>
+	<a class="scroll-hint" href="#status" aria-label="Scroll down to project status">
 		<svg viewBox="0 0 16 16" width="36" height="36" aria-hidden="true" fill="currentColor">
 			<rect x="7" y="0" width="2" height="6" />
 			<rect x="4" y="6" width="8" height="2" />
@@ -59,3 +63,4 @@
 		</svg>
 	</a>
 </section>
+

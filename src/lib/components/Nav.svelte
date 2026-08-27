@@ -8,6 +8,7 @@
 	<span class="nav-tagline">Self-Hosted Minecraft Server Manager</span>
 	<div class="nav-links" id="mobile-menu">
 		<a href="#about">About</a>
+		<a href="#status">Status</a>
 		<a href="#features">Features</a>
 		<a href="#stack">Stack</a>
 		<a href="#team">Team</a>

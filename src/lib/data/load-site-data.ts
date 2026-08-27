@@ -20,7 +20,7 @@ async function fetchJson(url: string): Promise<unknown | null> {
 }
 
 /**
- * Fetch and normalize all site content at build/prerender time.
+ * Fetch and normalize all site content at request time in the Cloudflare runtime.
  * Every endpoint is independent: a failure only degrades its own section.
  */
 export async function loadSiteData(): Promise<SiteData> {

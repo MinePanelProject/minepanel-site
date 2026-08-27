@@ -78,6 +78,12 @@ export function parseStack(v: unknown): StackEntry[] {
 	return out;
 }
 
+const GITHUB_AVATAR_IDS: Record<string, number> = {
+	okazakee: 17621558,
+	MarcoBllfr: 122992858,
+	hikarii2: 242011098
+};
+
 export function parseTeam(v: unknown): TeamMember[] {
 	if (!Array.isArray(v)) return [];
 	const out: TeamMember[] = [];
@@ -90,6 +96,15 @@ export function parseTeam(v: unknown): TeamMember[] {
 		const github = asString(raw.github);
 		const validUser = username !== null && isValidUsername(username);
 		const validLink = github !== null && isSafeGitHubUrl(github);
+		const sourceGithubId =
+			typeof raw.githubId === 'number' && Number.isSafeInteger(raw.githubId) && raw.githubId > 0
+				? raw.githubId
+				: null;
+		const githubId =
+			sourceGithubId ??
+			(validUser && username !== null && Object.hasOwn(GITHUB_AVATAR_IDS, username)
+				? GITHUB_AVATAR_IDS[username]
+				: null);
 		// Original contract: link + avatar only when BOTH a valid username and
 		// a safe GitHub URL exist. Otherwise the card renders as a non-link
 		// placeholder (the username text may still be shown).
@@ -99,7 +114,12 @@ export function parseTeam(v: unknown): TeamMember[] {
 			username: validUser ? username : null,
 			role,
 			github: both ? github : null,
-			avatarSrc: both ? `https://github.com/${username}.png?size=128` : null
+			githubId: both ? githubId : null,
+			avatarSrc: both
+				? githubId !== null
+					? `https://avatars.githubusercontent.com/u/${githubId}?v=4&size=128`
+					: `https://avatars.githubusercontent.com/${username}?size=128`
+				: null
 		});
 	}
 	return out;

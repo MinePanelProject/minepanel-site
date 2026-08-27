@@ -19,6 +19,8 @@ export interface TeamMember {
 	role: string;
 	/** validated https github URL or null */
 	github: string | null;
+	/** positive GitHub numeric user ID when supplied by the content source */
+	githubId: number | null;
 	avatarSrc: string | null;
 }
 

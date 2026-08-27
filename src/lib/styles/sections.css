@@ -162,6 +162,23 @@ nav a:hover { color: var(--green); }
   justify-content: center;
   flex-wrap: wrap;
 }
+.hero-app-note {
+  margin-top: 16px;
+  color: var(--dark-gray);
+  font-size: 17px;
+}
+
+.hero-links {
+  display: flex;
+  gap: 24px;
+  margin-top: 16px;
+  font-family: var(--pixel);
+  font-size: 10px;
+}
+
+.hero-links a { color: var(--green2); text-decoration: none; }
+.hero-links a:hover { color: var(--white); text-decoration: underline; }
+
 
 .hero .cta-row .btn { min-width: 230px; }
 
@@ -186,6 +203,56 @@ nav a:hover { color: var(--green); }
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(6px); }
 }
+
+/* ─── PROJECT STATUS ─── */
+.project-status { max-width: 1120px; }
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.status-card {
+  padding: 28px;
+  background: #111;
+}
+
+.status-card--next { border-color: #6f6f2f; }
+
+.status-kicker {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--yellow);
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+
+.status-kicker--live { color: var(--green); }
+
+.status-card h3 {
+  font-family: var(--pixel);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--aqua);
+  margin-bottom: 14px;
+}
+
+.status-card p:not(.status-kicker) {
+  color: var(--gray);
+  line-height: 1.5;
+}
+
+.status-card ul {
+  display: grid;
+  gap: 9px;
+  margin-top: 20px;
+  padding-left: 24px;
+  color: var(--gray);
+}
+
+.status-card li::marker { color: var(--green); }
+.status-card--next li::marker { color: var(--yellow); }
 
 /* ─── FEATURE GRID ─── */
 .features-grid {
@@ -313,6 +380,23 @@ nav a:hover { color: var(--green); }
 
 .copy-btn:hover { border-color: var(--green2); color: var(--white); }
 .copy-btn:active { transform: translateY(2px); }
+.deploy-note {
+  margin-top: 16px;
+  color: var(--gray);
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.deploy-doc-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--aqua);
+  font-family: var(--pixel);
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.deploy-doc-link:hover { color: var(--white); text-decoration: underline; }
 
 /* ─── TEAM ─── */
 .team-roster {
@@ -551,9 +635,22 @@ nav a:hover { color: var(--green); }
 /* ─── FOOTER ─── */
 footer {
   border-top: 3px solid var(--border);
-  text-align: center;
-  padding: 24px;
+  padding: 36px 32px 24px;
   background: #0a0a0a;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(140px, 1fr));
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto 32px;
+}
+
+.footer-brand > p:not(.footer-logo) {
+  max-width: 260px;
+  color: var(--gray);
+  line-height: 1.4;
 }
 
 .footer-logo {
@@ -562,6 +659,111 @@ footer {
   color: var(--green);
   margin-bottom: 12px;
 }
+
+.footer-logo span { color: var(--yellow); }
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footer-heading {
+  font-family: var(--pixel);
+  font-size: 10px;
+  color: var(--yellow);
+  margin-bottom: 4px;
+}
+
+.footer-links a { font-size: 18px; }
+
+.footer-disclaimer {
+  color: var(--dark-gray);
+  font-size: 15px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ─── LEGAL PAGE ─── */
+.legal-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+}
+
+.legal-back {
+  display: inline-block;
+  margin-bottom: 48px;
+  color: var(--green);
+  text-decoration: none;
+}
+
+.legal-back:hover { color: var(--white); }
+
+.legal-page .section-title { margin-bottom: 20px; }
+
+.legal-lede {
+  max-width: 760px;
+  color: var(--gray);
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.legal-section {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 2px solid #1e1e1e;
+}
+
+.legal-section h2 {
+  font-family: var(--pixel);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--aqua);
+  margin-bottom: 14px;
+}
+
+.legal-section p,
+.legal-section li {
+  color: var(--gray);
+  line-height: 1.55;
+}
+
+.legal-section ul {
+  display: grid;
+  gap: 12px;
+  padding-left: 26px;
+}
+
+.legal-section li::marker { color: var(--green); }
+
+.legal-page a:not(.legal-back) { color: var(--green2); }
+.legal-page a:not(.legal-back):hover { color: var(--white); }
+.legal-contact {
+  display: grid;
+  gap: 20px;
+}
+
+.legal-contact dt {
+  font-family: var(--pixel);
+  font-size: 11px;
+  color: var(--yellow);
+}
+
+.legal-contact dd {
+  margin-top: 8px;
+  color: var(--gray);
+  line-height: 1.55;
+}
+
+
+.legal-updated {
+  margin-top: 40px;
+  color: var(--dark-gray);
+  font-size: 17px;
+}
+
 
 /* ─── BACK TO TOP ─── */
 .back-to-top {
@@ -679,6 +881,16 @@ footer {
   .roadmap-source { text-align: left; }
   #roadmap.section { padding-left: 16px; padding-right: 16px; }
 }
+@media (max-width: 600px) {
+  .status-grid,
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-grid { gap: 24px; }
+  .footer-links { align-items: center; }
+  .footer-brand { text-align: center; }
+  .footer-brand > p:not(.footer-logo) { margin: 0 auto; }
+  .legal-page { padding: 40px 16px 72px; }
+}
+
 
 /* Short viewports (landscape phones/tablets, short laptops): compact hero so
    content never overflows the fold. Symmetric values keep exact centering. */
