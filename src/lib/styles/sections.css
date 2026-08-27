@@ -35,7 +35,7 @@ nav .logo-img {
 nav a {
   font-family: var(--pixel);
   font-size: 11px;
-  color: var(--white);
+  color: var(--yellow);
   text-decoration: none;
   transition: color .15s;
   padding: 8px 6px;

@@ -115,6 +115,27 @@ test.describe('homepage maturity pass', () => {
 		await expect(page.locator('#roadmap-tab-mobile')).toHaveAttribute('aria-selected', 'true');
 	});
 
+	test('roadmap markers use track-local presentation numbering', async ({ page }) => {
+		await ready(page);
+		const trackMarkers = await page.locator('.roadmap-panel').evaluateAll((panels) =>
+			panels.map((panel) => ({
+				id: panel.id,
+				markers: [...panel.querySelectorAll('.tl-dot')].map((marker) => marker.textContent?.trim() ?? '')
+			}))
+		);
+
+		expect(trackMarkers.map(({ id }) => id)).toEqual([
+			'roadmap-panel-backend',
+			'roadmap-panel-frontend',
+			'roadmap-panel-mobile'
+		]);
+		for (const { markers } of trackMarkers) {
+			expect(markers).toEqual(markers.map((_, index) => String(index + 1)));
+			expect(markers).not.toContain('next');
+			expect(markers).not.toContain('backend-2');
+		}
+	});
+
 	test('mobile navigation opens, closes, and retains valid links', async ({ page }) => {
 		await ready(page);
 		await page.setViewportSize({ width: 375, height: 812 });
@@ -236,6 +257,20 @@ test.describe('data layer: ownership and roadmap fixtures', () => {
 		);
 		expect(built.sourceNote).toBe('[ live data - last updated: 2026-05-01 ]');
 		expect(built.stateText).toBe('[ 1 PHASE ]');
+	});
+
+	test('semantic phase IDs remain unchanged during normalization', () => {
+		const ids = ['1', 'next', '1.5', '2a', 'backend-2'];
+		const phases = parsePhases(
+			ids.map((id) => ({
+				id,
+				label: id,
+				name: 'Phase',
+				description: 'Milestone'
+			}))
+		);
+
+		expect(phases.map((phase) => phase.id)).toEqual(ids);
 	});
 
 	test('one unavailable roadmap source degrades independently', () => {

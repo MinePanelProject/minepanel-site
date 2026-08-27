@@ -6,7 +6,7 @@
 </script>
 
 <div class="tl-phase-block tl-item {phase.status}{phase.collapsed ? ' phase-collapsed' : ''}">
-	<div class="tl-dot {phase.status}">{phase.id}</div>
+	<div class="tl-dot {phase.status}">{index + 1}</div>
 	<button
 		type="button"
 		class="tl-phase-toggle tl-header"
