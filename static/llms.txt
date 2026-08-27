@@ -1,0 +1,18 @@
+# MinePanel
+
+> MinePanel is an open-source, self-hosted Minecraft server management panel.
+
+MinePanel lets operators run the backend, database, and Minecraft servers on their own hardware. Users operate their own deployment and infrastructure; `app.minepanel.xyz` is the hosted dashboard client, not a centralized MinePanel backend.
+
+## Official resources
+
+- [Website](https://minepanel.xyz/)
+- [Backend](https://github.com/MinePanelProject/minepanel-backend) — NestJS API, database, Docker orchestration, authentication, and server lifecycle
+- [Web Dashboard / PWA](https://github.com/MinePanelProject/minepanel-pwa) — hosted dashboard client for operator-selected self-hosted backends
+- [Project Website Repository](https://github.com/MinePanelProject/minepanel-site)
+- [Deployment Guide](https://github.com/MinePanelProject/minepanel-backend/blob/master/docs/deployment.md)
+- [Source Organization](https://github.com/MinePanelProject)
+
+## Authority and status
+
+The backend repository is authoritative for backend behavior and deployment. The PWA repository is authoritative for dashboard behavior. The website repository is authoritative for public site content. Current implementation progress is shown on the [website roadmap](https://minepanel.xyz/#roadmap) and in the implementation repositories' roadmap files, including the [backend roadmap](https://github.com/MinePanelProject/minepanel-backend/blob/master/roadmap.json).

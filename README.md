@@ -37,7 +37,7 @@ src/
     styles/             # design tokens + global CSS
 static/
   fonts/               # locally hosted Press Start 2P and VT323 WOFF2 files
-  robots.txt
+  robots.txt, sitemap.xml, llms.txt
   favicon.png, og.png, logo-hero.png, icon-512.png
   interactions.js      # framework-independent browser interactions
 tests/                 # Playwright behavior and data-layer tests

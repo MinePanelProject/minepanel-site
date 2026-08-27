@@ -110,6 +110,85 @@ test.describe('homepage maturity pass', () => {
 		await expect(page.locator('.legal-page')).toContainText('Last updated:');
 	});
 
+	test('public SEO endpoints and homepage metadata remain canonical', async ({ page, request }) => {
+		await ready(page);
+		await expect(page.locator('h1')).toHaveCount(1);
+		await expect(page.locator('h2')).toHaveCount(5);
+		await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://minepanel.xyz/');
+		await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+			'content',
+			'Self-hosted Minecraft server management panel. Run the backend, database, and Minecraft servers on your own hardware with Docker.'
+		);
+		await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+			'content',
+			'https://minepanel.xyz/og.png'
+		);
+
+		const structuredData = JSON.parse(
+			(await page.locator('script[type="application/ld+json"]').textContent()) ?? ''
+		);
+		expect(structuredData['@context']).toBe('https://schema.org');
+		expect(structuredData['@graph']).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					'@id': 'https://minepanel.xyz/#website',
+					'@type': 'WebSite',
+					url: 'https://minepanel.xyz/'
+				}),
+				expect.objectContaining({
+					'@id': 'https://minepanel.xyz/#software',
+					'@type': 'SoftwareApplication',
+					url: 'https://minepanel.xyz/'
+				})
+			])
+		);
+
+		const robots = await request.get(`${CAND}/robots.txt`);
+		expect(robots.ok()).toBe(true);
+		const robotsBody = await robots.text();
+		expect(robotsBody).toContain('User-agent: *');
+		expect(robotsBody).toContain('Allow: /');
+		expect(robotsBody).toContain('Sitemap: https://minepanel.xyz/sitemap.xml');
+
+		const sitemap = await request.get(`${CAND}/sitemap.xml`);
+		expect(sitemap.ok()).toBe(true);
+		expect(sitemap.headers()['content-type']).toContain('application/xml');
+		const sitemapBody = await sitemap.text();
+		const sitemapDocument = await page.evaluate((xml) => {
+			const document = new DOMParser().parseFromString(xml, 'application/xml');
+			return {
+				root: document.documentElement.localName,
+				parseError: document.querySelector('parsererror')?.textContent ?? '',
+				locs: [...document.querySelectorAll('loc')].map((loc) => loc.textContent)
+			};
+		}, sitemapBody);
+		expect(sitemapDocument.root).toBe('urlset');
+		expect(sitemapDocument.parseError).toBe('');
+		expect(sitemapDocument.locs).toEqual([
+			'https://minepanel.xyz/',
+			'https://minepanel.xyz/privacy'
+		]);
+		expect(new Set(sitemapDocument.locs).size).toBe(sitemapDocument.locs.length);
+		expect(sitemapBody).not.toContain('app.minepanel.xyz');
+		expect(sitemapBody).not.toContain('github.com');
+	});
+
+	test('llms.txt identifies authoritative project resources', async ({ request }) => {
+		const llms = await request.get(`${CAND}/llms.txt`);
+		expect(llms.ok()).toBe(true);
+		const body = await llms.text();
+		expect(body).toContain('# MinePanel');
+		expect(body).toContain('open-source');
+		expect(body).toContain('self-hosted');
+		expect(body).toContain('https://github.com/MinePanelProject/minepanel-backend');
+		expect(body).toContain('https://github.com/MinePanelProject/minepanel-pwa');
+		expect(body).toContain('https://github.com/MinePanelProject/minepanel-site');
+		expect(body).toContain(
+			'https://github.com/MinePanelProject/minepanel-backend/blob/master/docs/deployment.md'
+		);
+		expect(body).not.toMatch(/coming soon|planned feature|will support/i);
+	});
+
 	test('back to top and roadmap interactions remain usable', async ({ page }) => {
 		await ready(page);
 		await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));

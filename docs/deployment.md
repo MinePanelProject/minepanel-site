@@ -52,10 +52,15 @@ Cloudflare cache may serve stale content during stale-while-revalidate.
 
 - `https://minepanel.xyz/` renders the SvelteKit homepage.
 - `https://minepanel.xyz/privacy` renders the prerendered Privacy Notice.
-- `https://minepanel.xyz/robots.txt` permits normal indexing.
+- `https://minepanel.xyz/robots.txt` permits normal indexing and points crawlers to the sitemap.
+- `https://minepanel.xyz/sitemap.xml` lists the public canonical pages.
+- `https://minepanel.xyz/llms.txt` provides a curated project and repository reference for AI systems.
+
 - `bun run check` validates the Svelte and TypeScript source.
 - `bun run build` produces `.svelte-kit/cloudflare`.
 - `bun run parity` runs the Playwright behavior, accessibility, responsive, asset, and data-layer suite.
+
+The homepage advertises `/llms.txt` with the standard `describedby` link relation as an additive, consumer-dependent discovery hint; it is not required for search indexing.
 
 The homepage does not claim zero platform-level data collection. Cloudflare may process request and
 security logs, and GitHub may process the runtime's public-content requests. See `/privacy` for the

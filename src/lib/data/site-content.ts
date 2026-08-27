@@ -30,6 +30,14 @@ const team = teamSource.map(
 		avatarSrc: `https://avatars.githubusercontent.com/u/${member.githubId}?v=4&size=128`
 	})
 );
+export const SITE_URL = 'https://minepanel.xyz';
+
+export const MINEPANEL_REPOSITORIES = {
+	organization: 'https://github.com/MinePanelProject',
+	backend: 'https://github.com/MinePanelProject/minepanel-backend',
+	dashboard: 'https://github.com/MinePanelProject/minepanel-pwa',
+	site: 'https://github.com/MinePanelProject/minepanel-site'
+} as const;
 
 export const SITE_CONTENT = {
 	metadata: {
@@ -45,7 +53,7 @@ export const SITE_CONTENT = {
 			after: ' brings up the stack on your own machine. No cloud lock-in. Full control.'
 		}
 	},
-	githubHref: 'https://github.com/MinePanelProject',
+	githubHref: MINEPANEL_REPOSITORIES.organization,
 	features: [
 		{
 			icon: '⚡',
