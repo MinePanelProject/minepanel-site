@@ -78,11 +78,21 @@ test.describe('homepage maturity pass', () => {
 	test('quick deploy is current and footer links are present', async ({ page }) => {
 		await ready(page);
 		const deploy = page.locator('.deploy-box');
-		await expect(deploy).toContainText('git clone');
+		await expect(deploy).not.toContainText('git clone');
+		await expect(deploy).toContainText('raw.githubusercontent.com/MinePanelProject/minepanel-backend');
+		await expect(deploy).toContainText('curl');
+		await expect(deploy).toContainText('docker-compose.yml');
+		await expect(deploy).toContainText('.env.example');
+		await expect(deploy).toContainText('Caddyfile');
 		await expect(deploy).toContainText('cp .env.example .env');
+		await expect(deploy).toContainText("-i 's|^MINEPANEL_IMAGE=.*|MINEPANEL_IMAGE=ghcr.io/minepanelproject/minepanel-backend:edge|'");
 		await expect(deploy).toContainText('docker compose pull');
 		await expect(deploy).toContainText('docker compose up');
-		await expect(deploy).not.toContainText('public release coming soon');
+		await expect(deploy).toContainText('no stable release is published yet');
+		await expect(page.locator('.deploy-doc-link')).toHaveAttribute(
+			'href',
+			'https://github.com/MinePanelProject/minepanel-backend/blob/master/docs/deployment.md'
+		);
 		await expect(page.locator('footer')).toBeVisible();
 		await expect(page.locator('footer')).not.toContainText('MinePanel contributors');
 		await expect(page.locator('footer a[href="/privacy"]')).toHaveCount(1);
