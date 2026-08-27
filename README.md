@@ -33,7 +33,7 @@ src/
   lib/
     components/        # page sections: Nav, Hero, ProjectStatus, Features,
                        # TechStack, QuickDeploy, Team, Footer, roadmap/*
-    data/              # endpoints, types, validation, fallbacks, data loader
+    data/              # local typed site content, roadmap endpoints/validation/loading
     styles/             # design tokens + global CSS
 static/
   fonts/               # locally hosted Press Start 2P and VT323 WOFF2 files
@@ -46,13 +46,23 @@ docs/                  # deployment notes
 
 ## Content and data loading
 
-`src/routes/+page.server.ts` calls `loadSiteData()` at runtime. The loader fetches public JSON from GitHub raw-content endpoints in parallel:
+Static presentation content is owned by this repository in typed TypeScript at
+[`src/lib/data/site-content.ts`](./src/lib/data/site-content.ts). This includes metadata, feature cards,
+tech-stack presentation, team data, GitHub links, and avatar IDs. Static copy changes require a
+minepanel-site deployment.
 
-- [`minepanel-site.json`](https://github.com/MinePanelProject/minepanel-backend/blob/master/minepanel-site.json) from `minepanel-backend`
+`src/routes/+page.server.ts` calls `loadSiteData()` at runtime. The loader fetches and validates only
+roadmap JSON from each implementation repository:
+
+- [`roadmap.json`](https://github.com/MinePanelProject/minepanel-backend/blob/master/roadmap.json) from `minepanel-backend`
 - [`roadmap.json`](https://github.com/MinePanelProject/minepanel-pwa/blob/master/roadmap.json) from `minepanel-pwa`
-- the mobile roadmap endpoint when that repository publishes one
+- the mobile [`roadmap.json`](https://github.com/MinePanelProject/minepanel-mobile/blob/master/roadmap.json) when that repository publishes one
 
-Each request has an independent timeout and is validated before it reaches the components. Missing or invalid sources degrade only their own roadmap section. These are server-side Cloudflare/runtime requests; the browser does not fetch GitHub APIs or roadmap JSON. The site has no star counter, analytics, or client-side content fetch.
+Each request has an independent timeout and is validated before it reaches the roadmap components.
+Missing or invalid sources degrade only their own roadmap section. These are server-side
+Cloudflare/runtime requests; the browser does not fetch GitHub APIs or roadmap JSON. Roadmap updates
+therefore do not require a minepanel-site deployment. The site has no star counter, analytics, or
+client-side content fetch.
 
 ## Privacy and browser dependencies
 

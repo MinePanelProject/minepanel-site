@@ -1,5 +1,6 @@
-import type { Feature, Phase, PhaseItem, RoadmapTrack, SiteData, StackEntry, TeamMember } from './types';
-import { BADGE_LABEL, EMPTY_STATE, FEATURE_ACCENT, NORMAL_STATUS, STACK_TYPES } from './fallbacks';
+import type { Phase, PhaseItem, RoadmapTrack, SiteData } from './types';
+import { SITE_CONTENT } from './site-content';
+import { BADGE_LABEL, EMPTY_STATE, NORMAL_STATUS } from './fallbacks';
 
 /** Guard helpers for the untyped upstream JSON. */
 
@@ -11,21 +12,6 @@ function asString(v: unknown): string | null {
 	return typeof v === 'string' ? v : null;
 }
 
-/** Validate a GitHub URL — https: only, exact github.com host. */
-export function isSafeGitHubUrl(v: unknown): v is string {
-	if (typeof v !== 'string') return false;
-	try {
-		const u = new URL(v);
-		return u.protocol === 'https:' && u.hostname === 'github.com';
-	} catch {
-		return false;
-	}
-}
-
-/** Validate a GitHub username — letters, digits, hyphen; 1-39 chars. */
-export function isValidUsername(v: unknown): v is string {
-	return typeof v === 'string' && /^[a-zA-Z0-9-]{1,39}$/.test(v);
-}
 
 export function normalizeStatus(s: unknown): 'done' | 'wip' | 'planned' | 'future' {
 	if (typeof s === 'string' && Object.hasOwn(NORMAL_STATUS, s)) {
@@ -41,89 +27,6 @@ export function clampProgress(p: unknown): number | null {
 	return Math.min(100, Math.max(0, n));
 }
 
-export function parseFeatures(v: unknown): Feature[] {
-	if (!Array.isArray(v)) return [];
-	const out: Feature[] = [];
-	for (const raw of v) {
-		if (!isRecord(raw)) continue;
-		const icon = asString(raw.icon);
-		const title = asString(raw.title);
-		const description = asString(raw.description);
-		if (icon === null || title === null || description === null) continue;
-		const color = asString(raw.color);
-		out.push({
-			icon,
-			title,
-			description,
-			coming: raw.coming === true,
-			accent: color !== null && Object.hasOwn(FEATURE_ACCENT, color) ? FEATURE_ACCENT[color] : null
-		});
-	}
-	return out;
-}
-
-export function parseStack(v: unknown): StackEntry[] {
-	if (!Array.isArray(v)) return [];
-	const out: StackEntry[] = [];
-	for (const raw of v) {
-		if (!isRecord(raw)) continue;
-		const label = asString(raw.label);
-		if (label === null) continue;
-		const type = asString(raw.type);
-		out.push({
-			label,
-			type: type !== null && Object.hasOwn(STACK_TYPES, type) ? STACK_TYPES[type] : null
-		});
-	}
-	return out;
-}
-
-const GITHUB_AVATAR_IDS: Record<string, number> = {
-	okazakee: 17621558,
-	MarcoBllfr: 122992858,
-	hikarii2: 242011098
-};
-
-export function parseTeam(v: unknown): TeamMember[] {
-	if (!Array.isArray(v)) return [];
-	const out: TeamMember[] = [];
-	for (const raw of v) {
-		if (!isRecord(raw)) continue;
-		const name = asString(raw.name);
-		if (name === null) continue;
-		const role = asString(raw.role) ?? '';
-		const username = asString(raw.username);
-		const github = asString(raw.github);
-		const validUser = username !== null && isValidUsername(username);
-		const validLink = github !== null && isSafeGitHubUrl(github);
-		const sourceGithubId =
-			typeof raw.githubId === 'number' && Number.isSafeInteger(raw.githubId) && raw.githubId > 0
-				? raw.githubId
-				: null;
-		const githubId =
-			sourceGithubId ??
-			(validUser && username !== null && Object.hasOwn(GITHUB_AVATAR_IDS, username)
-				? GITHUB_AVATAR_IDS[username]
-				: null);
-		// Original contract: link + avatar only when BOTH a valid username and
-		// a safe GitHub URL exist. Otherwise the card renders as a non-link
-		// placeholder (the username text may still be shown).
-		const both = validUser && validLink;
-		out.push({
-			name,
-			username: validUser ? username : null,
-			role,
-			github: both ? github : null,
-			githubId: both ? githubId : null,
-			avatarSrc: both
-				? githubId !== null
-					? `https://avatars.githubusercontent.com/u/${githubId}?v=4&size=128`
-					: `https://avatars.githubusercontent.com/${username}?size=128`
-				: null
-		});
-	}
-	return out;
-}
 
 export function parsePhaseItems(v: unknown): PhaseItem[] {
 	if (!Array.isArray(v)) return [];
@@ -224,32 +127,20 @@ export function parseUpdatedAt(v: unknown): string | null {
 	return asString(v);
 }
 
-export function parseGithubHref(v: unknown, fallback: string): string {
-	if (typeof v === 'string' && isSafeGitHubUrl(v)) return v;
-	return fallback;
-}
 
 export function buildSiteData(args: {
 	backend: unknown;
 	frontend: unknown;
 	mobile: unknown;
-	fallbackGithub: string;
 }): SiteData {
-	const backendRec = isRecord(args.backend) ? args.backend : null;
-	const updatedAt = backendRec ? parseUpdatedAt(backendRec.updatedAt) : null;
-	const meta = backendRec && isRecord(backendRec.meta) ? backendRec.meta : null;
-	const githubHref = parseGithubHref(meta?.github ?? null, args.fallbackGithub);
-
 	const backendTrack = parseTrackEnvelope(args.backend);
 	const frontendTrack = parseTrackEnvelope(args.frontend);
 	const mobileTrack = parseTrackEnvelope(args.mobile);
+	const updatedAt = backendTrack.updatedAt;
 
 	return {
 		updatedAt,
-		features: backendRec ? parseFeatures(backendRec.features) : [],
-		stack: backendRec ? parseStack(backendRec.techStack) : [],
-		team: backendRec ? parseTeam(backendRec.team) : [],
-		githubHref,
+		content: SITE_CONTENT,
 		tracks: [
 			buildTrack(
 				'backend',
@@ -258,7 +149,7 @@ export function buildSiteData(args: {
 				'[ Backend / Core API ]',
 				EMPTY_STATE.backend,
 				backendTrack.phases,
-				backendTrack.updatedAt ?? updatedAt
+				updatedAt
 			),
 			buildTrack(
 				'frontend',

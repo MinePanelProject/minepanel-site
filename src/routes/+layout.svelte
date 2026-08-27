@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { SITE_CONTENT } from '$lib/data/site-content';
 	import '../lib/styles/tokens.css';
 	import '../lib/styles/global.css';
 	import '../lib/styles/primitives.css';
@@ -8,11 +9,11 @@
 
 	let { children } = $props();
 	const isPrivacy = $derived(page.url.pathname === '/privacy');
-	const pageTitle = $derived(isPrivacy ? 'Privacy Notice - MinePanel' : 'MinePanel - Self-Hosted Minecraft Server Manager');
+	const pageTitle = $derived(isPrivacy ? 'Privacy Notice - MinePanel' : SITE_CONTENT.metadata.title);
 	const pageDescription = $derived(
 		isPrivacy
 			? 'Privacy notice for the MinePanel project website, including hosting, roadmap data, and third-party links.'
-			: 'Self-hosted Minecraft server management panel. Run the backend, database, and Minecraft servers on your own hardware with Docker.'
+			: SITE_CONTENT.metadata.seoDescription
 	);
 	const canonicalUrl = $derived(`https://minepanel.xyz${isPrivacy ? '/privacy' : '/'}`);
 </script>

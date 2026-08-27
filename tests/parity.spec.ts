@@ -3,15 +3,12 @@ import {
 	buildSiteData,
 	buildTrack,
 	clampProgress,
-	isSafeGitHubUrl,
-	isValidUsername,
 	normalizeStatus,
-	parseFeatures,
 	parsePhases,
-	parseStack,
-	parseTeam,
 	parseTrackEnvelope
 } from '../src/lib/data/validate';
+import { BACKEND_URL, FRONTEND_URL, MOBILE_URL } from '../src/lib/data/endpoints';
+import { SITE_CONTENT } from '../src/lib/data/site-content';
 import { EMPTY_STATE } from '../src/lib/data/fallbacks';
 
 const CAND = 'http://127.0.0.1:8788';
@@ -172,12 +169,43 @@ test.describe('homepage maturity pass', () => {
 		await expect(page.locator('.feature-card')).toHaveCount(8);
 		await expect(page.locator('.stack-pill')).toHaveCount(13);
 		await expect(page.locator('.team-block')).toHaveCount(3);
-		await expect(page.locator('.tl-phase-block')).toHaveCount(12);
+		expect(await page.locator('.tl-phase-block').count()).toBeGreaterThan(0);
 		await context.close();
 	});
 });
 
-test.describe('data layer: security and envelope fixtures', () => {
+test.describe('data layer: ownership and roadmap fixtures', () => {
+	test('roadmap endpoints use independently owned roadmap files', () => {
+		expect(BACKEND_URL).toMatch(/minepanel-backend\/refs\/heads\/master\/roadmap\.json$/);
+		expect(FRONTEND_URL).toMatch(/minepanel-pwa\/refs\/heads\/master\/roadmap\.json$/);
+		expect(MOBILE_URL).toMatch(/minepanel-mobile\/refs\/heads\/master\/roadmap\.json$/);
+	});
+
+	test('site presentation is local and remote roadmap data cannot replace it', () => {
+		expect(SITE_CONTENT.features).toHaveLength(8);
+		expect(SITE_CONTENT.stack).toHaveLength(13);
+		expect(SITE_CONTENT.team).toHaveLength(3);
+		expect(SITE_CONTENT.team.map((member) => member.githubId)).toEqual([17621558, 122992858, 242011098]);
+		expect(
+			SITE_CONTENT.team.every((member) => member.avatarSrc.startsWith('https://avatars.githubusercontent.com/'))
+		).toBe(true);
+
+		const data = buildSiteData({
+			backend: {
+				meta: { title: 'remote content must not be used' },
+				features: [],
+				techStack: [],
+				team: [],
+				phases: []
+			},
+			frontend: null,
+			mobile: null
+		});
+		expect(data.content).toBe(SITE_CONTENT);
+		expect(data.content.metadata.title).toBe('MinePanel - Self-Hosted Minecraft Server Manager');
+		expect(data.tracks.find((track) => track.key === 'backend')?.phases).toBeNull();
+	});
+
 	test('published roadmap envelope is parsed with phases and updatedAt', () => {
 		const track = parseTrackEnvelope({
 			updatedAt: '2026-05-01',
@@ -197,16 +225,40 @@ test.describe('data layer: security and envelope fixtures', () => {
 		expect(track.phases).toHaveLength(1);
 		expect(track.updatedAt).toBe('2026-05-01');
 		expect(track.phases?.[0].status).toBe('wip');
-		const built = buildTrack('frontend', 'Web', 'Dashboard', '[ Dashboard / Web ]', EMPTY_STATE.frontend, track.phases, track.updatedAt);
+		const built = buildTrack(
+			'frontend',
+			'Web',
+			'Dashboard',
+			'[ Dashboard / Web ]',
+			EMPTY_STATE.frontend,
+			track.phases,
+			track.updatedAt
+		);
 		expect(built.sourceNote).toBe('[ live data - last updated: 2026-05-01 ]');
 		expect(built.stateText).toBe('[ 1 PHASE ]');
 	});
 
-	test('invalid backend phases always yield unavailable note', () => {
-		const empty = buildTrack('backend', 'Backend', 'Core API', '[ Backend / Core API ]', EMPTY_STATE.backend, null, null);
-		expect(empty.sourceNote).toBe('[ roadmap data unavailable ]');
-		const recordWithoutPhases = parseTrackEnvelope({ foo: 'bar' });
-		expect(recordWithoutPhases.phases).toBeNull();
+	test('one unavailable roadmap source degrades independently', () => {
+		const data = buildSiteData({
+			backend: null,
+			frontend: {
+				updatedAt: '2026-05-01',
+				phases: [
+					{
+						id: '1',
+						label: 'Phase 1',
+						name: 'Dashboard',
+						status: 'done',
+						description: 'Published',
+						items: []
+					}
+				]
+			},
+			mobile: null
+		});
+		expect(data.tracks.find((track) => track.key === 'backend')?.sourceNote).toBe('[ roadmap data unavailable ]');
+		expect(data.tracks.find((track) => track.key === 'frontend')?.phases).toHaveLength(1);
+		expect(data.tracks.find((track) => track.key === 'mobile')?.sourceNote).toBe('[ public roadmap not published ]');
 	});
 
 	test('status normalization and progress clamping', () => {
@@ -221,52 +273,7 @@ test.describe('data layer: security and envelope fixtures', () => {
 		expect(clampProgress('nope')).toBeNull();
 	});
 
-	test('feature, stack, and URL allowlists reject unknown values', () => {
-		const features = parseFeatures([
-			{ icon: '⚡', title: 'A', description: 'D', coming: true, color: 'yellow' },
-			{ icon: '🐳', title: 'B', description: 'D', color: 'aqua' },
-			{ icon: '🔗', title: 'C', description: 'D', color: 'purple' }
-		]);
-		expect(features[0].accent).toBe('yellow');
-		expect(features[1].accent).toBe('aqua');
-		expect(features[2].accent).toBeNull();
-		const stack = parseStack([{ label: 'TS', type: 'lang' }, { label: 'X', type: 'script' }]);
-		expect(stack[0].type).toBe('lang');
-		expect(stack[1].type).toBeNull();
-		expect(isSafeGitHubUrl('https://github.com/MinePanelProject/minepanel-backend')).toBe(true);
-		expect(isSafeGitHubUrl('https://github.com.evil.com/foo')).toBe(false);
-		expect(isValidUsername('okazakee')).toBe(true);
-		expect(isValidUsername('bad user!')).toBe(false);
-	});
-
-	test('team links and avatars require both safe identity fields', () => {
-		const team = parseTeam([
-			{ name: 'A', username: 'okazakee', role: 'r', github: 'https://github.com/okazakee' },
-			{ name: 'B', username: 'okazakee', role: 'r', github: 'https://evilgithub.com/x' },
-			{ name: 'C', username: null, role: 'r', github: 'https://github.com/okazakee' }
-		]);
-		expect(team[0].githubId).toBe(17621558);
-		expect(team[0].avatarSrc).toBe('https://avatars.githubusercontent.com/u/17621558?v=4&size=128');
-		expect(team[1].github).toBeNull();
-		expect(team[1].avatarSrc).toBeNull();
-		expect(team[2].github).toBeNull();
-	});
-	test('numeric GitHub IDs produce stable avatar service URLs', () => {
-		const team = parseTeam([
-			{
-				name: 'A',
-				username: 'okazakee',
-				githubId: 583231,
-				role: 'r',
-				github: 'https://github.com/okazakee'
-			}
-		]);
-		expect(team[0].githubId).toBe(583231);
-		expect(team[0].avatarSrc).toBe('https://avatars.githubusercontent.com/u/583231?v=4&size=128');
-	});
-
-
-	test('hostile content stays data in the normalized view model', () => {
+	test('hostile remote roadmap content stays data in the normalized view model', () => {
 		const phases = parsePhases([
 			{
 				id: '1',
@@ -279,20 +286,5 @@ test.describe('data layer: security and envelope fixtures', () => {
 		]);
 		expect(phases[0].label).toBe('<b>x</b>');
 		expect(phases[0].items[0].text).toBe('<svg onload=alert(1)>');
-		const data = buildSiteData({
-			backend: {
-				updatedAt: 'x',
-				meta: { github: 'javascript:alert(1)' },
-				features: [{ icon: '⚡', title: '<b>t</b>', description: 'd' }],
-				techStack: [{ label: 'l', type: 'toString' }],
-				team: [{ name: 'n', username: 'okazakee', role: 'r', github: 'https://github.com/okazakee' }],
-				phases: []
-			},
-			frontend: null,
-			mobile: null,
-			fallbackGithub: 'https://github.com/MinePanelProject'
-		});
-		expect(data.githubHref).toBe('https://github.com/MinePanelProject');
-		expect(data.features[0].title).toBe('<b>t</b>');
 	});
 });

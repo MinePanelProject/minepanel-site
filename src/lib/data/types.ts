@@ -13,15 +13,36 @@ export interface StackEntry {
 	type: string | null;
 }
 
-export interface TeamMember {
+export interface SiteTeamMember {
 	name: string;
-	username: string | null;
+	username: string;
 	role: string;
-	/** validated https github URL or null */
-	github: string | null;
-	/** positive GitHub numeric user ID when supplied by the content source */
-	githubId: number | null;
-	avatarSrc: string | null;
+	github: string;
+	githubId: number;
+}
+
+export interface TeamMember extends SiteTeamMember {
+	/** dynamically loaded GitHub avatar URL */
+	avatarSrc: string;
+}
+export interface SiteMetadata {
+	title: string;
+	tagline: string;
+	description: string;
+	seoDescription: string;
+	heroDescription: {
+		before: string;
+		command: string;
+		after: string;
+	};
+}
+
+export interface SiteContent {
+	metadata: SiteMetadata;
+	githubHref: string;
+	features: Feature[];
+	stack: StackEntry[];
+	team: TeamMember[];
 }
 
 export interface PhaseItem {
@@ -61,10 +82,7 @@ export interface RoadmapTrack {
 
 export interface SiteData {
 	updatedAt: string | null;
-	features: Feature[];
-	stack: StackEntry[];
-	team: TeamMember[];
+	content: SiteContent;
 	tracks: RoadmapTrack[];
-	/** validated https github org URL */
-	githubHref: string;
 }
+

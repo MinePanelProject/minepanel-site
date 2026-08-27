@@ -16,7 +16,7 @@
 </script>
 
 <Nav />
-<Hero githubHref={data.site.githubHref} />
+<Hero githubHref={data.site.content.githubHref} />
 
 <TerrainStrip variant="transition" />
 <ProjectStatus />
@@ -26,7 +26,7 @@
 <div class="section" id="features">
 	<p class="section-label">[ What it does ]</p>
 	<h2 class="section-title">Core Features</h2>
-	<Features features={data.site.features} />
+	<Features features={data.site.content.features} />
 </div>
 
 <TerrainStrip variant="transition" />
@@ -34,7 +34,7 @@
 <div class="section" id="stack">
 	<p class="section-label">[ Built with ]</p>
 	<h2 class="section-title">Tech Stack</h2>
-	<TechStack stack={data.site.stack} />
+	<TechStack stack={data.site.content.stack} />
 	<QuickDeploy />
 </div>
 
@@ -43,13 +43,13 @@
 <div class="section" id="team">
 	<p class="section-label">[ Who we are ]</p>
 	<h2 class="section-title">Team</h2>
-	<Team team={data.site.team} />
+	<Team team={data.site.content.team} />
 </div>
 <TerrainStrip variant="transition" />
 
 <RoadmapExplorer tracks={data.site.tracks} />
 
-<Footer githubHref={data.site.githubHref} />
+<Footer githubHref={data.site.content.githubHref} />
 
 <BackToTop />
 

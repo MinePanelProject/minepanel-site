@@ -1,4 +1,4 @@
-import { BACKEND_URL, DEFAULT_GITHUB_ORG_URL, FRONTEND_URL, MOBILE_URL } from './endpoints';
+import { BACKEND_URL, FRONTEND_URL, MOBILE_URL } from './endpoints';
 import { buildSiteData } from './validate';
 import type { SiteData } from './types';
 
@@ -30,5 +30,5 @@ export async function loadSiteData(): Promise<SiteData> {
 		fetchJson(MOBILE_URL)
 	]);
 
-	return buildSiteData({ backend, frontend, mobile, fallbackGithub: DEFAULT_GITHUB_ORG_URL });
+	return buildSiteData({ backend, frontend, mobile });
 }

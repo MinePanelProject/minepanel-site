@@ -29,14 +29,3 @@ export const NORMAL_STATUS: Record<string, string> = {
 	future: 'future'
 };
 
-export const FEATURE_ACCENT: Record<string, 'aqua' | 'yellow'> = {
-	aqua: 'aqua',
-	yellow: 'yellow'
-};
-
-export const STACK_TYPES: Record<string, string> = {
-	lang: 'lang',
-	db: 'db',
-	infra: 'infra',
-	auth: 'auth'
-};

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { SITE_CONTENT } from '$lib/data/site-content';
+
 	let { githubHref }: { githubHref: string } = $props();
 	const deployHref = 'https://github.com/MinePanelProject/minepanel-backend#quick-deploy';
 	const webAppHref = 'https://app.minepanel.xyz';
@@ -9,10 +11,12 @@
 		<img class="hero-mark" src="/logo-hero.png" width="256" height="256" alt="" />
 		<h1>Mine<span>Panel</span></h1>
 	</div>
-	<p class="tagline">Self-hosted Minecraft server management, the right way.</p>
+	<p class="tagline">{SITE_CONTENT.metadata.tagline}</p>
 	<p class="subtitle">
-		A single <code style="color:var(--green);background:#0d1f0d;padding:2px 6px;">docker-compose up</code>
-		brings up the stack on your own machine. No cloud lock-in. Full control.
+		{SITE_CONTENT.metadata.heroDescription.before}<code
+			style="color:var(--green);background:#0d1f0d;padding:2px 6px;"
+			>{SITE_CONTENT.metadata.heroDescription.command}</code
+		>{SITE_CONTENT.metadata.heroDescription.after}
 	</p>
 	<div class="cta-row">
 		<a class="btn btn-primary" href={deployHref} target="_blank" rel="noopener">

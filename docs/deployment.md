@@ -7,15 +7,16 @@ This document describes how the SvelteKit codebase is deployed to **Cloudflare P
 
 `adapter-cloudflare` emits static assets plus a Pages Worker. The root layout keeps SSR enabled,
 CSR disabled, and prerendering enabled by default. The homepage opts out with
-`src/routes/+page.server.ts` (`prerender = false`) because it loads validated roadmap/content JSON
-at request time and sets a 12-hour public cache with stale-while-revalidate. The `/privacy` route
-uses the default prerender behavior.
+`src/routes/+page.server.ts` (`prerender = false`) because it combines local typed presentation
+content with validated roadmap JSON fetched at request time and sets a 12-hour public cache with
+stale-while-revalidate. The `/privacy` route uses the default prerender behavior.
 
-The homepage loader fetches the public content sources from GitHub raw-content endpoints in the
-Cloudflare runtime. Failures are isolated and fall back to the validated empty roadmap states.
-These requests are server-side; the browser does not call GitHub APIs. Normal page loads use
-same-origin JavaScript, CSS, local assets, and locally hosted fonts, plus the intentionally remote
-GitHub team avatar images.
+Static presentation content lives in `src/lib/data/site-content.ts`. Changes to that content require a
+site deployment. The homepage loader fetches only roadmap sources from GitHub in the Cloudflare
+runtime. Failures are isolated and fall back to truthful empty/unavailable roadmap states. These
+requests are server-side; the browser does not call GitHub APIs. Normal page loads use same-origin
+JavaScript, CSS, local assets, and locally hosted fonts, plus the intentionally remote GitHub team
+avatar images.
 
 ## Cloudflare Pages settings
 
@@ -36,15 +37,16 @@ deployments are created for pull requests; rollbacks are available in the Cloudf
 
 ## Content sources
 
-The homepage reads and validates:
+The website owns its presentation content locally in typed TypeScript. Factual implementation
+progress remains remote and is independently owned by each implementation repository:
 
-- `minepanel-site.json` from `minepanel-backend`
+- `roadmap.json` from `minepanel-backend`
 - `roadmap.json` from `minepanel-pwa`
-- the mobile roadmap endpoint when published
+- the mobile `roadmap.json` when published
 
-The content source is cached by the homepage response headers for 12 hours. A redeploy is not
-required for every content refresh, although the Cloudflare cache may serve stale content during
-stale-while-revalidate.
+Roadmap updates do not require a minepanel-site deployment. Static website copy changes do require
+one. The content source is cached by the homepage response headers for 12 hours, although the
+Cloudflare cache may serve stale content during stale-while-revalidate.
 
 ## Verification
 
