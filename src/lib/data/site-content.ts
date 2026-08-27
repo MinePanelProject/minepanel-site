@@ -12,7 +12,7 @@ const teamSource = [
 		name: 'Marco',
 		username: 'MarcoBllfr',
 		role: 'Mobile Dev',
-		github: 'https://github.com/okazakee',
+		github: 'https://github.com/MarcoBllfr',
 		githubId: 122992858
 	},
 	{
