@@ -2,7 +2,7 @@
 
 SvelteKit site for [minepanel.xyz](https://minepanel.xyz), the public landing page for MinePanel: a self-hosted Minecraft server management panel.
 
-The site uses TypeScript, SvelteKit, and [`@sveltejs/adapter-cloudflare`](https://svelte.dev/docs/kit/adapter-cloudflare). It is served by Cloudflare Pages with a Pages Worker for the runtime landing route. The homepage is intentionally not fully prerendered: its server loader fetches and validates current project content and roadmap data, then caches the response at the edge for 12 hours. The `/privacy` route is prerendered.
+The site uses TypeScript, SvelteKit, and [`@sveltejs/adapter-cloudflare`](https://svelte.dev/docs/kit/adapter-cloudflare). It is served by Cloudflare Pages with a Pages Worker for the runtime landing route. The homepage is intentionally not fully prerendered: its server loader fetches and validates current project content and roadmap data, revalidating on every request (`no-cache, must-revalidate`) so new deployments are immediately visible. Only the remote roadmap fetches are cached, at the Cloudflare subrequest layer. The `/privacy` route is prerendered.
 
 ## Requirements
 
@@ -27,7 +27,7 @@ src/
   routes/
     +layout.ts         # shared SSR/prerender/CSR flags
     +layout.svelte     # metadata, canonical URLs, and global styles
-    +page.server.ts    # runtime homepage data loader and edge cache headers
+    +page.server.ts    # runtime homepage data loader and revalidation headers
     +page.svelte       # homepage section composition
     privacy/            # prerendered Privacy Notice route
   lib/
@@ -77,7 +77,7 @@ Hosted on **Cloudflare Pages**, connected to this repository:
 - output directory: `.svelte-kit/cloudflare`
 - Node version: 22.12.x
 
-`svelte.config.js` routes requests through the Cloudflare adapter. The homepage opts into runtime rendering with `prerender = false` and sends a 12-hour public cache plus stale-while-revalidate headers. Static assets and `/privacy` remain prerendered. `wrangler.jsonc` contains the `nodejs_als` compatibility flag and no account IDs or secrets.
+`svelte.config.js` routes requests through the Cloudflare adapter. The homepage opts into runtime rendering with `prerender = false` and sends `no-cache, must-revalidate`, so deployed HTML is never served stale; remote roadmap fetches are cached by Cloudflare at the subrequest layer (2xx 10 minutes, 404 60 s, 5xx never). Static assets and `/privacy` remain prerendered. `wrangler.jsonc` contains the `nodejs_als` compatibility flag and no account IDs or secrets.
 
 ## Related projects
 

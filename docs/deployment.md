@@ -8,8 +8,8 @@ This document describes how the SvelteKit codebase is deployed to **Cloudflare P
 `adapter-cloudflare` emits static assets plus a Pages Worker. The root layout keeps SSR enabled,
 CSR disabled, and prerendering enabled by default. The homepage opts out with
 `src/routes/+page.server.ts` (`prerender = false`) because it combines local typed presentation
-content with validated roadmap JSON fetched at request time and sets a 12-hour public cache with
-stale-while-revalidate. The `/privacy` route uses the default prerender behavior.
+content with validated roadmap JSON fetched at request time and sends `no-cache, must-revalidate`,
+so a fresh deployment is visible immediately. The `/privacy` route uses the default prerender behavior.
 
 Static presentation content lives in `src/lib/data/site-content.ts`. Changes to that content require a
 site deployment. The homepage loader fetches only roadmap sources from GitHub in the Cloudflare
@@ -45,8 +45,9 @@ progress remains remote and is independently owned by each implementation reposi
 - the mobile `roadmap.json` when published
 
 Roadmap updates do not require a minepanel-site deployment. Static website copy changes do require
-one. The content source is cached by the homepage response headers for 12 hours, although the
-Cloudflare cache may serve stale content during stale-while-revalidate.
+one. Rendered homepage responses are never served stale (`no-cache, must-revalidate`); only the
+roadmap `fetch()` subrequests are cached at the Cloudflare subrequest layer via `cf.cacheEverything`
+and `cacheTtlByStatus` (2xx 10 minutes, 404 60 s, 5xx never cached).
 
 ## Verification
 
