@@ -44,12 +44,12 @@ export const SITE_CONTENT = {
 		title: 'MinePanel - Self-Hosted Minecraft Server Manager',
 		tagline: 'Self-hosted Minecraft server management, the right way.',
 		description:
-			'A single <code>docker compose up</code> brings up the entire stack on your own machine. No external services. No cloud lock-in. Full control.',
+			'A single <code>docker compose up</code> brings up the entire stack on your own machine. No required hosted control plane, no cloud lock-in. Full control.',
 		seoDescription:
 			'Self-hosted Minecraft server management panel. Run the backend, database, and Minecraft servers on your own hardware with Docker.',
 		heroDescription: {
 			before: 'A single ',
-			command: 'docker-compose up',
+			command: 'docker compose up',
 			after: ' brings up the stack on your own machine. No cloud lock-in. Full control.'
 		}
 	},
@@ -59,7 +59,7 @@ export const SITE_CONTENT = {
 			icon: '⚡',
 			title: 'One-Command Deploy',
 			description:
-				'The full stack - backend, database and MC servers - runs on your hardware with a single command. Zero external dependencies.',
+				'The full stack - backend, database and MC servers - runs on your hardware with a single command. No required hosted control plane, no cloud lock-in.',
 			coming: false,
 			accent: null
 		},
@@ -75,9 +75,9 @@ export const SITE_CONTENT = {
 			icon: '🔗',
 			title: 'Multi-Backend',
 			description:
-				'Point the frontend at independent self-hosted backends. CHIPS Partitioned cookies are the primary cross-origin mechanism where supported; the PKCE fallback remains reserved.',
-			coming: true,
-			accent: 'yellow'
+				'The hosted PWA discovers independent self-hosted backends. Cross-origin auth uses HttpOnly CHIPS Partitioned cookies coordinated with Web Locks on supported browsers; PKCE remains only a possible future compatibility option.',
+			coming: false,
+			accent: null
 		},
 		{
 			icon: '🛡️',
@@ -115,7 +115,7 @@ export const SITE_CONTENT = {
 			icon: '👤',
 			title: 'Player Portal',
 			description:
-				'Unlike other MC panels, MinePanel is built for players too. Browse your servers, request access, view your Minecraft profile and playtime - all in one place.',
+				'Unlike other MC panels, MinePanel is built for players too. Server discovery and access requests already exist; the richer player portal - Minecraft profile, playtime, and notifications - arrives in later phases.',
 			coming: true,
 			accent: 'yellow'
 		}
