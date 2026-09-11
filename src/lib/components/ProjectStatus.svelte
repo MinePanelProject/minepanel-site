@@ -22,14 +22,13 @@
 			<p class="status-kicker">[ ACTIVE DEVELOPMENT ]</p>
 			<h3>More operations are on the roadmap.</h3>
 			<p>
-				The foundation is usable, while the operational surface is still expanding. Current roadmap work
+				The foundation is usable, while the operational surface is still expanding. Committed roadmap work
 				includes:
 			</p>
 			<ul>
 				<li>Richer real-time events and server console operations</li>
 				<li>Backups and scheduled tasks</li>
 				<li>File and plugin management</li>
-				<li>Velocity proxy and Bedrock networking</li>
 			</ul>
 		</article>
 	</div>
