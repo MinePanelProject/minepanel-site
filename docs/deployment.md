@@ -44,10 +44,16 @@ progress remains remote and is independently owned by each implementation reposi
 - `roadmap.json` from `minepanel-pwa`
 - the mobile `roadmap.json` when published
 
-Roadmap updates do not require a minepanel-site deployment. Static website copy changes do require
-one. Rendered homepage responses are never served stale (`no-cache, must-revalidate`); only the
-roadmap `fetch()` subrequests are cached at the Cloudflare subrequest layer via `cf.cacheEverything`
-and `cacheTtlByStatus` (2xx 10 minutes, 404 60 s, 5xx never cached).
+Each `roadmap.json` is the published machine-readable projection of that repository's `ROADMAP.md`,
+which carries the rationale, dependencies and gates behind the progress items. Roadmap updates do not
+require a minepanel-site deployment. Static website copy changes do require one. Rendered homepage
+responses are never served stale (`no-cache, must-revalidate`); only the roadmap `fetch()`
+subrequests are cached at the Cloudflare subrequest layer via `cf.cacheEverything` and
+`cacheTtlByStatus` (2xx 10 minutes, 404 60 s, 5xx never cached).
+
+Canonical engineering documents (not consumed by the site, but the sources for any future public
+documentation) live in each implementation repository as `SPEC.md`, `ARCHITECTURE.md`, `ROADMAP.md`
+and `DEVELOPMENT.md`.
 
 ## Verification
 

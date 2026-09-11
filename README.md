@@ -58,6 +58,10 @@ roadmap JSON from each implementation repository:
 - [`roadmap.json`](https://github.com/MinePanelProject/minepanel-pwa/blob/master/roadmap.json) from `minepanel-pwa`
 - the mobile [`roadmap.json`](https://github.com/MinePanelProject/minepanel-mobile/blob/master/roadmap.json) when that repository publishes one
 
+Each `roadmap.json` is the published machine-readable projection of that repository's `ROADMAP.md`
+(the companion `SPEC.md`, `ARCHITECTURE.md` and `DEVELOPMENT.md` documents are the canonical
+engineering sources and are not consumed by this site).
+
 Each request has an independent timeout and is validated before it reaches the roadmap components.
 Missing or invalid sources degrade only their own roadmap section. These are server-side
 Cloudflare/runtime requests; the browser does not fetch GitHub APIs or roadmap JSON. Roadmap updates
@@ -81,5 +85,5 @@ Hosted on **Cloudflare Pages**, connected to this repository:
 
 ## Related projects
 
-- [`minepanel-backend`](https://github.com/MinePanelProject/minepanel-backend): self-hosted NestJS API, PostgreSQL, Caddy, Docker orchestration, authentication, and server lifecycle
-- [`minepanel-pwa`](https://github.com/MinePanelProject/minepanel-pwa): hosted dashboard client for operator-selected self-hosted backends at [app.minepanel.xyz](https://app.minepanel.xyz)
+- [`minepanel-backend`](https://github.com/MinePanelProject/minepanel-backend): self-hosted NestJS API, PostgreSQL, Caddy, Docker orchestration, authentication, and server lifecycle — engineering documentation in [`SPEC.md`](https://github.com/MinePanelProject/minepanel-backend/blob/master/SPEC.md), [`ARCHITECTURE.md`](https://github.com/MinePanelProject/minepanel-backend/blob/master/ARCHITECTURE.md), [`ROADMAP.md`](https://github.com/MinePanelProject/minepanel-backend/blob/master/ROADMAP.md)
+- [`minepanel-pwa`](https://github.com/MinePanelProject/minepanel-pwa): hosted dashboard client for operator-selected self-hosted backends at [app.minepanel.xyz](https://app.minepanel.xyz) — engineering documentation in [`SPEC.md`](https://github.com/MinePanelProject/minepanel-pwa/blob/master/SPEC.md), [`ARCHITECTURE.md`](https://github.com/MinePanelProject/minepanel-pwa/blob/master/ARCHITECTURE.md), [`ROADMAP.md`](https://github.com/MinePanelProject/minepanel-pwa/blob/master/ROADMAP.md)

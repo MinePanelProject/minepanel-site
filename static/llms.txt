@@ -16,3 +16,18 @@ MinePanel lets operators run the backend, database, and Minecraft servers on the
 ## Authority and status
 
 The backend repository is authoritative for backend behavior and deployment. The PWA repository is authoritative for dashboard behavior. The website repository is authoritative for public site content. Current implementation progress is shown on the [website roadmap](https://minepanel.xyz/#roadmap) and in the implementation repositories' roadmap files, including the [backend roadmap](https://github.com/MinePanelProject/minepanel-backend/blob/master/roadmap.json).
+
+## Engineering documentation
+
+Each implementation repository keeps one canonical engineering document set. These are the primary sources for what a component is, what it currently does, and what is committed next:
+
+- Backend specification: https://github.com/MinePanelProject/minepanel-backend/blob/master/SPEC.md
+- Backend architecture: https://github.com/MinePanelProject/minepanel-backend/blob/master/ARCHITECTURE.md
+- Backend roadmap: https://github.com/MinePanelProject/minepanel-backend/blob/master/ROADMAP.md
+- Backend development guide: https://github.com/MinePanelProject/minepanel-backend/blob/master/DEVELOPMENT.md
+- Dashboard specification: https://github.com/MinePanelProject/minepanel-pwa/blob/master/SPEC.md
+- Dashboard architecture: https://github.com/MinePanelProject/minepanel-pwa/blob/master/ARCHITECTURE.md
+- Dashboard roadmap: https://github.com/MinePanelProject/minepanel-pwa/blob/master/ROADMAP.md
+- Dashboard development guide: https://github.com/MinePanelProject/minepanel-pwa/blob/master/DEVELOPMENT.md
+
+Within an implementation repository, the spec and the code are separate authorities. Production code, migrations, tests, and runtime configuration evidence what a component currently does; its `SPEC.md` defines the intended contracts and invariants. When the two disagree, the discrepancy is investigated and classified (implementation defect, intentional contract change needing a spec update, stale specification, or unresolved) rather than silently reconciled in either direction.
