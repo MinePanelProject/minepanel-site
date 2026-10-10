@@ -58,12 +58,16 @@ Node is pinned by `.node-version` and `package.json#engines` (22.12.x).
 
 - **Never fetch site content from the browser.** Homepage data is fetched server-side in the
   Cloudflare runtime with a per-source timeout; a failed source must degrade only its own section.
-- **Never add client-side tracking, analytics, advertising, contact forms or non-essential cookies**,
-  and never use `localStorage`/`sessionStorage`. The privacy notice describes the actual processing
-  surface; if the surface changes, the notice and `/privacy` copy change with it.
+- **Analytics are limited to the anonymous, cookieless, self-hosted Umami instance** (aggregate usage
+  and masked, anonymized session replays; disclosed in `/privacy`). Never add advertising, marketing
+  pixels, profiling, contact forms, or non-essential cookies; never write site data to
+  `localStorage`/`sessionStorage` (the analytics script only reads the standard `umami.disabled`
+  opt-out flag). The privacy notice describes the actual processing surface; if the surface changes,
+  the notice and `/privacy` copy change with it.
 - **Never add a remote font, script or asset host** without a documented reason; fonts are self-hosted
-  from `static/fonts/` under the SIL Open Font License, and team avatars are the only intentionally
-  remote images (GitHub's avatar service).
+  from `static/fonts/` under the SIL Open Font License, team avatars are the only intentionally remote
+  images (GitHub's avatar service), and the Umami analytics scripts are the documented remote-script
+  exception (see `/privacy`).
 - **Never claim unshipped behaviour as shipped**, and never soften a limitation into a promise. If a
   capability is exploratory, say so or omit it; if it is committed, it must match the owning
   repository's `ROADMAP.md`.
