@@ -37,6 +37,14 @@
 				hosting and edge infrastructure.
 			</li>
 			<li>
+				Anonymized usage statistics are collected through MinePanel's self-hosted analytics:
+				aggregate data such as page views, click positions, and scroll depth, plus anonymous
+				session replays used only to understand how the site is used and improve it. The data is
+				not linked to any identifier and cannot be used to identify or profile you; the analytics
+				script honors the Do Not Track browser setting, input fields are masked, and sensitive
+				areas are excluded from recording.
+			</li>
+			<li>
 				The site server retrieves project content and roadmap JSON from public GitHub raw-content
 				endpoints. This is a server-side fetch; your browser does not connect to those endpoints for
 				roadmap data.
@@ -61,19 +69,25 @@
 			available, and detect abuse. Team avatar delivery supports the team display but is not used by
 			MinePanel as analytics, advertising, or profiling. The basis is legitimate interest in operating
 			and securing the website (GDPR Article 6(1)(f)). Content requests to public GitHub sources support
-			the roadmap display and do not intentionally include visitor data.
+			the roadmap display and do not intentionally include visitor data. Anonymous, aggregated usage
+			statistics support usability analysis of the site under the same legitimate-interest basis;
+			they are not used for advertising, profiling, or automated decision-making.
 		</p>
 	</section>
 
 	<section class="legal-section">
 		<h2>Cookies, storage, and tracking</h2>
 		<p>
-			This site has no advertising, profiling, behavioral analytics, marketing pixels, contact forms,
-			essential site login, or embedded third-party widgets. It does not set cookies and does not use
-			localStorage or sessionStorage. It uses locally hosted fonts and local scripts; team avatars are
-			the intentional exception and load from GitHub's avatar service. Platform security and request
-			logging may still occur at the infrastructure layer. A cookie banner is not used solely because
-			the avatars are remotely hosted.
+			This site has no advertising, profiling, marketing pixels, contact forms, essential site login,
+			or embedded third-party widgets. It does not set cookies and does not store anything in
+			<code>localStorage</code> or <code>sessionStorage</code>; the analytics script only reads the
+			standard <code>umami.disabled</code> opt-out flag. Anonymous, cookieless usage statistics are
+			processed by MinePanel's self-hosted analytics service — aggregate page views, click positions,
+			scroll depth, and anonymized session replays — with input fields masked and sensitive areas
+			excluded from recording. It uses locally hosted fonts; team avatars are the intentional
+			remote exception and load from GitHub's avatar service. Platform security and request logging
+			may still occur at the infrastructure layer. A cookie banner is not used: the analytics are
+			anonymous, cookieless, and store no personal data.
 		</p>
 	</section>
 
@@ -83,7 +97,10 @@
 			The site runs on Cloudflare Pages/Workers. Public roadmap content is retrieved from GitHub's raw
 			content service by the site runtime and cached at the edge. Cloudflare and GitHub may process
 			infrastructure data internationally, including outside the EEA, under their own terms and
-			transfer mechanisms. MinePanel contributors do not maintain a visitor database or user profile.
+			transfer mechanisms. Analytics data is stored only on MinePanel's self-hosted analytics
+			infrastructure: aggregate statistics are retained until deleted, and anonymized session
+			replay recordings are automatically deleted after 30 days. MinePanel contributors do not
+			maintain a visitor database or advertising profile.
 			Exact retention periods for platform security logs are controlled by the relevant provider's
 			policies and operational requirements, not by this site.
 		</p>
@@ -111,5 +128,5 @@
 		</p>
 	</section>
 
-	<p class="legal-updated">Last updated: <time datetime="2026-08-27">27 August 2026</time></p>
+	<p class="legal-updated">Last updated: <time datetime="2026-10-10">10 October 2026</time></p>
 </main>

@@ -15,8 +15,9 @@ Static presentation content lives in `src/lib/data/site-content.ts`. Changes to 
 site deployment. The homepage loader fetches only roadmap sources from GitHub in the Cloudflare
 runtime. Failures are isolated and fall back to truthful empty/unavailable roadmap states. These
 requests are server-side; the browser does not call GitHub APIs. Normal page loads use same-origin
-JavaScript, CSS, local assets, and locally hosted fonts, plus the intentionally remote GitHub team
-avatar images.
+JavaScript, CSS, local assets, and locally hosted fonts, plus two intentional remote exceptions: the
+GitHub team avatar images, and the anonymous, cookieless analytics scripts served by the self-hosted
+Umami instance at `umami.okazakee.dev` (see `/privacy`).
 
 ## Cloudflare Pages settings
 

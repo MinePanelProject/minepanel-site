@@ -15,6 +15,17 @@ const CAND = 'http://127.0.0.1:8788';
 const pageErrors = new WeakMap<Page, string[]>();
 
 async function ready(page: Page, path = '/') {
+	// The analytics origin is exercised as a route stub: preview runs must neither depend on nor
+	// send data to the live tracking service. The requests themselves are still asserted below.
+	await page.route('https://umami.okazakee.dev/**', (route) => {
+		const isScript = route.request().url().endsWith('.js');
+		return route.fulfill({
+			status: 200,
+			contentType: isScript ? 'text/javascript' : 'application/json',
+			headers: { 'Access-Control-Allow-Origin': '*' },
+			body: isScript ? '' : JSON.stringify({ enabled: false })
+		});
+	});
 	await page.goto(`${CAND}${path}`, { waitUntil: 'networkidle' });
 	await page.waitForSelector(path === '/' ? '#status' : '.legal-page', { timeout: 30000 });
 	await page.evaluate(() => document.fonts.ready);
@@ -34,14 +45,14 @@ test.beforeEach(async ({ page }) => {
 	});
 	page.on('pageerror', (error) => errors.push(`pageerror: ${error.message}`));
 	page.on('requestfailed', (request) => {
-		if (!/^https:\/\/(github.com|avatars\.githubusercontent\.com)\//.test(request.url())) {
+		if (!/^https:\/\/(github.com|avatars\.githubusercontent\.com|umami\.okazakee\.dev)\//.test(request.url())) {
 			errors.push(`requestfailed: ${request.url()}`);
 		}
 	});
 	page.on('response', (response) => {
 		if (
 			response.status() >= 400 &&
-			!/^https:\/\/(github.com|avatars\.githubusercontent\.com)\//.test(response.url())
+			!/^https:\/\/(github.com|avatars\.githubusercontent\.com|umami\.okazakee\.dev)\//.test(response.url())
 		) {
 			errors.push(`${response.status()}: ${response.url()}`);
 		}
@@ -250,10 +261,13 @@ test.describe('homepage maturity pass', () => {
 		});
 		await ready(page);
 		await expect(page.locator('.team-block-avatar')).toHaveCount(3);
+		const allowedThirdPartyPrefixes = [
+			'https://avatars.githubusercontent.com/',
+			'https://umami.okazakee.dev/'
+		];
 		expect(thirdParty.length).toBeGreaterThanOrEqual(3);
-		expect(
-			thirdParty.every((url) => url.startsWith('https://avatars.githubusercontent.com/'))
-		).toBe(true);
+		expect(thirdParty.every((url) => allowedThirdPartyPrefixes.some((prefix) => url.startsWith(prefix)))).toBe(true);
+		expect(thirdParty.some((url) => url.startsWith('https://umami.okazakee.dev/'))).toBe(true);
 		expect(fonts.some((url) => url.includes('/fonts/press-start-2p-latin.woff2'))).toBe(true);
 		expect(fonts.some((url) => url.includes('/fonts/vt323-latin.woff2'))).toBe(true);
 		const css = await page.evaluate(() =>

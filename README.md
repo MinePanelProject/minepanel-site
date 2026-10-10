@@ -65,12 +65,13 @@ engineering sources and are not consumed by this site).
 Each request has an independent timeout and is validated before it reaches the roadmap components.
 Missing or invalid sources degrade only their own roadmap section. These are server-side
 Cloudflare/runtime requests; the browser does not fetch GitHub APIs or roadmap JSON. Roadmap updates
-therefore do not require a minepanel-site deployment. The site has no star counter, analytics, or
-client-side content fetch.
+therefore do not require a minepanel-site deployment. The site has no star counter or client-side
+content fetch; the only analytics it uses are anonymous, cookieless, and self-hosted (see *Privacy and
+browser dependencies* below).
 
 ## Privacy and browser dependencies
 
-The site has no advertising, profiling, behavioral analytics, marketing tracking, contact form, or non-essential cookie. It does not use `localStorage` or `sessionStorage`. The project fonts are served from `static/fonts/` under the SIL Open Font License, so normal homepage loads do not request Google Fonts. Team avatars remain dynamically loaded from GitHub's avatar service, which is documented in [`/privacy`](https://minepanel.xyz/privacy) together with Cloudflare platform logging, server-side GitHub content retrieval, and external links.
+The site has no advertising, profiling, marketing tracking, contact form, or non-essential cookie. It does not set cookies and does not store anything in `localStorage` or `sessionStorage` (the analytics script only reads the standard `umami.disabled` opt-out flag). Anonymous, cookieless usage statistics — aggregate page views, click positions, scroll depth — and masked, anonymized session replays are processed by a self-hosted Umami instance; this is the only analytics the site uses, input fields are masked, and sensitive areas are excluded from recording. The project fonts are served from `static/fonts/` under the SIL Open Font License, so normal homepage loads do not request Google Fonts. Team avatars remain dynamically loaded from GitHub's avatar service, which is documented in [`/privacy`](https://minepanel.xyz/privacy) together with Cloudflare platform logging, server-side GitHub content retrieval, and external links.
 
 ## Deployment
 
